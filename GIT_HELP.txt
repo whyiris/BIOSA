@@ -1,0 +1,60 @@
+ORIGIN: Is the "repository"
+Master: Is the branch
+
+********************************************** 
+disregard changes
+********************************************** 
+$ git checkout --.
+
+
+
+
+********************************************** 
+Creating AND Switching, example LisaStart
+********************************************** 
+$ git checkout -b <nameIntention>
+
+
+
+
+********************************************** 
+If branch exist & want to switch to branch
+********************************************** 
+$ git branch <name_of_branch>
+
+
+
+
+********************************************** 
+Pushing to your branch
+********************************************** 
+$ git push origin <name_of_your_branch>
+
+
+
+
+********************************************** 
+Pull updates from repository from master
+********************************************** 
+$ git fetch 
+$ git merge origin/master
+
+
+
+
+**********************************************
+!!IMPORTANT!!
+Get/Pull a branch not in your current folder
+Use FCM (Fetch, Checkout, Merge):
+1) F: get a list of branches not on your folder
+2) C: create and switch to the branch 
+3) M: merge updates from origin/branch_name	
+********************************************** 
+$ git fetch  
+$ git checkout -b <name_of_branch>
+$ git merge origin/<name_of_branch>
+
+
+
+
+

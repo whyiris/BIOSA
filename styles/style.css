@@ -1,0 +1,37 @@
+.square {
+    display: inline-block;
+    height: 23px;
+    width: 70px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: #4D7D3D;
+}
+
+.square.gen-0{
+    background: #e1f0db;
+}
+
+.square.gen-100{
+    background: #C3E0B8;
+}
+
+.square.gen-300{
+    background: #A0C78F;
+}
+
+.square.gen-500{
+    background: #4D7A3C;
+}
+
+.square.gen-780{
+   background: #355629;
+}
+
+.square.gen-1000{
+    background: #1F3318;
+}
+
+.square.gen-compare{
+    background: #00215A;
+}

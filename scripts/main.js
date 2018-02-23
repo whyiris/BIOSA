@@ -1,15 +1,64 @@
-var database = require('./mutations');
-database.connect();
+const fs = require('fs');
+// var db = require('db');
+var helloObj = require('./parse');
+var dataFolder = "../resources/feb_23";
+extractData(dataFolder);
 
-(function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-            break;
+function extractData(dataFolder) {
+
+    var cocultures = [];
+    var monocultures = [];
+
+    fs.readdirSync(dataFolder).forEach(function (subFolder) {
+
+
+
+        if (subFolder == 'cocultures') {
+            var sub_Folder_Name = dataFolder + "/" + subFolder;
+
+            fs.readdirSync(sub_Folder_Name).forEach(function (sub_sub_Folder) {
+                var file = sub_Folder_Name + "/" + sub_sub_Folder;
+                cocultures.push(helloObj.readFile(file));
+            });
         }
-    }
-}(2000))
+        if (subFolder == 'monocultures') {
+            var sub_Folder_Name = dataFolder + "/" + subFolder;
 
-var entry = ["HE3", 100, "SNP", 182, "1550", "NC_005791", 780927, "G", "V",704,"L","GTA",704,1,"TTA",0.0735840797,"MMP0788","MMP0788","2110", "hypothetical protein",">", "<i>MMP0788</i>&nbsp;&rarr;", "MMP0788", "nonsynonymous", 11]
+            fs.readdirSync(sub_Folder_Name).forEach(function (sub_sub_Folder) {
+                var file = sub_Folder_Name + "/" + sub_sub_Folder;
+                monocultures.push(helloObj.readFile(file));
+            });
+        }
 
-database.insert(entry)
+
+    });
+
+
+    // console.log(';;;;;;;;;;;;;;;')
+// console.log("cocultures:::::::::" + cocultures);
+// console.log("finish!!!!!!!! " + cocultures.length);
+// console.log("finish!!!!!!!! " + monocultures.length);
+//
+//     console.log(cocultures[0].mutations);
+    return cocultures, monocultures;
+}
+
+// db.connect();
+//
+//
+// db.createCollection('Feb_23_CULTURE')
+// db.insertDB('Feb_23_CULTURE', cocultures)
+// db.insertDB('Feb_23_CULTURE', monocultures)
+
+
+
+
+
+
+
+
+
+
+
+
+

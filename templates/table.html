@@ -15,8 +15,8 @@
 <body>
 
 
-<div class="container">
-    <table id="gen-table" class="table table-bordered">
+<div class="container" id="gen-table">
+    <table  class="table table-bordered">
         <thead>
         <tr>
             <th v-for="header in headers">{{header}}</th>
@@ -34,26 +34,34 @@
             <td><div class="square gen-1000"></div></td>
             <td><div class="square gen-compare"></div></td>
         </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td></td>
-            <td></td>
-            <td></td>
+
+        <tr v-for="value, key in dict">
+            <th scope="row">{{key}}</th>
+            <td v-for="gen in value">{{gen}}</td>
         </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+
+
+        <!--<tr>-->
+            <!--<th scope="row">2</th>-->
+            <!--<td id="mongo"></td>-->
+            <!--<td></td>-->
+            <!--<td></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+            <!--<th scope="row">3</th>-->
+            <!--<td></td>-->
+            <!--<td></td>-->
+            <!--<td></td>-->
+        <!--</tr>-->
         </tbody>
     </table>
+    <p v-for="value, key in dict">{{ key }} {{value}}</p>
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -62,6 +70,6 @@
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="../scripts/app.js"></script>
+<script src="scripts/app.js"></script>
 </body>
 </html>

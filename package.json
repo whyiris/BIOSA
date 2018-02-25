@@ -1,0 +1,29 @@
+{
+  "name": "biosa",
+  "version": "1.0.0",
+  "description": "Biology Sequencing Analysis Project",
+  "main": "table.js",
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "express": "^4.16.2",
+    "jquery": "^3.3.1",
+    "jsdom": "^11.6.2",
+    "mongodb": "^3.0.3",
+    "popper.js": "^1.12.9",
+    "vue": "^2.5.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeesaCodes/BioSA.git"
+  },
+  "author": "Lisa,Wai,Hoiyan,Shen,CJ",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeesaCodes/BioSA/issues"
+  },
+  "homepage": "https://github.com/LeesaCodes/BioSA#readme"
+}

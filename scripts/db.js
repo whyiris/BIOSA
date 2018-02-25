@@ -301,3 +301,11 @@ queryCults(table, ["B","C"], [10, 100]);
 // console.log(test);
 
 
+module.exports = {
+
+    insertOneDoc: insertOneDoc,
+    insertDocs: insertDocs,
+    queryDB: queryDB,
+    queryCults: queryCults,
+    queryOneCult: queryOneCult
+}

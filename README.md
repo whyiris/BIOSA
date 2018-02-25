@@ -1,18 +1,19 @@
---------------------------------------------------------------
-
-After you clone this repository, run the following,
-using the built-in terminal in WebStorm
-
---------------------------------------------------------------
-npm install vue
-npm install bootstrap
-
-
+# Bioinformatics Sequence Analysis
+##### Authors: LK, HW, WB, CF
 
 
 --------------------------------------------------------------
 
-Organization
+## How to Run:
+
+--------------------------------------------------------------
+
+1. Start MongoDB server.
+2. $ node server.js
+
+--------------------------------------------------------------
+
+## Organization
 
 --------------------------------------------------------------
 All JavaScript files go inside "scripts" directory
@@ -21,12 +22,9 @@ All CSS files go to "styles" directory
 All input files go to "resources" directory
 
 
-
-
 --------------------------------------------------------------
 
-ATTENTION
+## ATTENTION
 
 --------------------------------------------------------------
-Ensure you are working on your OWN branch, not on the master
-
+Ensure you are working on your OWN branch, not on the master.

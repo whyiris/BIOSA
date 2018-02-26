@@ -9,7 +9,7 @@ function insertOneDoc(table, document)
 {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var ourDB = db.db("ourDB");
+        var ourDB = db.db("BIOSA");
         ourDB.collection(table).insertOne(document, function(err, res) {
             if (err) throw err;
             console.log("1 document inserted");
@@ -23,6 +23,7 @@ function insertDocs(table, document)
 {
     for(var i = 0; i < document.length; i++)
     {
+        console.log(i);
         insertOneDoc(table, document[i]);
     }
 }
@@ -287,7 +288,7 @@ var multiDocs = [data1, data2, data3, data4];
 // insertDocs(table, multiDocs);
 
 // queryOneCult(table, "B", 10);
-queryCults(table, ["B","C"], [10, 100]);
+// queryCults(table, ["B","C"], [10, 100]);
 // queryDB(table);
 // ======= testing array.push() ===========
 // var test = [];

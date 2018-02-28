@@ -1,5 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
+var result = [];
 
 
 
@@ -60,55 +61,49 @@ function queryDB(table){
     });
 }
 
-// function queryCults(table, cultures, generations) {
-//     var async = require('async');
-//     async.waterfall([
-//         function(callback){
-//             var resultArr = [];
-//             MongoClient.connect(url, function (err, db) {
-//                 if (err) throw err;
-//                 var dbo = db.db("ourDB");
-//                 for (var i = 0; i < cultures.length; i++) {
-//                     for (var j = 0; j < generations.length; j++) {
-//                         var query = {culture: cultures[i], generation: generations[j]};
-//                         // console.log(query);
-//                         callback(null, dbo.collection(table).find(query))
-//                     }
-//                 }
-//                 db.close();
-//             });
-//         }
-//     ], function (err, result) {
-//         console.log(result);
-//     })
-//
-// }
 
 
 // culture and generation are arrays
-function queryCults(table, cultures, generations) {
-    var resultArr = [];
+// function queryCults(table, cultures, generations, callback) {
+//     var resultArr = [];
+//     MongoClient.connect(url, function (err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("ourDB");
+//         for (var i = 0; i < cultures.length; i++) {
+//             for (var j = 0; j < generations.length; j++) {
+//                 var query = {culture: cultures[i], generation: generations[j]};
+//                 dbo.collection(table).find(query).toArray(function(err, result) {
+//                     if (err) throw err;
+//                     callback(result);
+//                 });
+//             }
+//         }
+//         console.log(result);
+//         db.close();
+//     });
+// }
+
+function queryCults(table, cultures, generations, callback) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("ourDB");
+        var queryArr = [];
         for (var i = 0; i < cultures.length; i++) {
             for (var j = 0; j < generations.length; j++) {
-                var query = {culture: cultures[i], generation: generations[j]};
-                // console.log(query);
-                dbo.collection(table).find(query).toArray(function (err, result) {
-                    if (err) throw err;
-                    // console.log(result);
-                    // resultArr.push(JSON.parse(JSON.stringify(result)));
-                    resultArr.push(result);
-                    // console.log("resultArr");
-                    // console.log(resultArr);
-
-                });
+                queryArr.push({culture: cultures[i], generation: generations[j]});
             }
         }
-        console.log(resultArr);
+        // dbo.collection(table).find(query).toArray(function(err, result) {
+        //     if (err) throw err;
+        //     callback(result);
+        // });
+        console.log(queryArr);
         db.close();
     });
+}
+
+function getResults(data){
+    result.push(data);
 }
 
 
@@ -285,28 +280,9 @@ var data4 = { culture: 'C',
 
 var multiDocs = [data1, data2, data3, data4];
 // insertOneDoc(table, data[0]);
-// insertDocs(table, multiDocs);
+insertDocs(table, multiDocs);
 
 // queryOneCult(table, "B", 10);
-// queryCults(table, ["B","C"], [10, 100]);
+// queryCults(table, ["B","C"], [10, 100], getResults);
 // queryDB(table);
-// ======= testing array.push() ===========
-// var test = [];
-// console.log(test);
-// var arr = [{1:"hi", 11: "haha", 111: ["dada", "asdasd"]},{2:"shit"},{3:"cat"},{4:"dog"},{5:"damn"}];
-// for (var i = 0; i < arr.length; i++){
-//     test.push(arr[i]);
-//     console.log(test);
-//
-// }
-// console.log(test);
 
-
-module.exports = {
-
-    insertOneDoc: insertOneDoc,
-    insertDocs: insertDocs,
-    queryDB: queryDB,
-    queryCults: queryCults,
-    queryOneCult: queryOneCult
-}

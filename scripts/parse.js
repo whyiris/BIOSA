@@ -383,10 +383,6 @@ function readFile(f) {
     // console.log(lineCounter);
     // console.log("---------------" + evidence_list.length);
     // console.log(mutation_list.length);
-    m_e_list.mutations = mutation_list;
-    m_e_list.evidences = evidence_list;
-    // console.log(m_e_list);
-    return m_e_list;
 }
 
 // function parse(filename){

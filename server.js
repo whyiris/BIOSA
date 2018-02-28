@@ -3,10 +3,12 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var bodyParser = require('body-parser'); // use for POST
 
 
 var app = express();
+
+var port = process.env.PORT || 3001;
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -29,8 +31,8 @@ app.get('/', function(req,res) {
     res.sendFile(path.join('index.html'));
 });
 
-app.listen(3001,function() {
+app.listen(port, function() {
     console.log(__dirname);
-    console.log('example app listening on port 3001!');
+    console.log('App listening on port 3001!');
 
 });

@@ -42,6 +42,24 @@ function renameCollection(origName, newName){
 }
 
 // ===================== query functions ===========================
+// queryTables returns a list of table names
+function queryTables(callback){
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("BIOSA");
+        // var query = {culture:culture};
+        dbo.listCollections().toArray(function(err, result) {
+            if (err) throw err;
+            var tableArr = [];
+            for(var i = 0; i < result.length; i++){
+                tableArr.push(result[i].name);
+            }
+            db.close();
+            callback(err, tableArr.sort());
+        });
+    });
+}
+
 // queryGenerations returns a list of generations (int)
 function queryGenerations(table, culture, callback){
     MongoClient.connect(url, function(err, db) {
@@ -55,12 +73,12 @@ function queryGenerations(table, culture, callback){
                 genArr.push(result[i].generation);
             }
             db.close();
-            callback(err, genArr);
+            callback(err, genArr.sort());
         });
     });
 }
 
-// queryCultures returns a list of cultures (string)
+// queryCultures returns a list of cultures that are unique in sorted order (string)
 function queryCultures(table, type, callback){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -70,12 +88,22 @@ function queryCultures(table, type, callback){
             if (err) throw err;
             var cultArr = [];
             for(var i = 0; i < result.length; i++){
-                cultArr.push(result[i].culture);
+                var culture = result[i].culture;
+                cultArr.push(culture);
+                // if(!(result.indexOf(culture) > -1))
+                // {
+                //     cultArr.push(culture);
+                // }
             }
+            var uniqueArr = cultArr.filter(findUnique);
             db.close();
-            callback(err, cultArr);
+            callback(err, uniqueArr.sort());
         });
     });
+}
+
+function findUnique(value, index, self) {
+    return self.indexOf(value) === index;
 }
 
 // queryMutations returns a list of mutation objects
@@ -186,177 +214,177 @@ function queryEvidences(table, culture, evidenceType, callback){
 
 
 // ---------------------------- below codes are for testing
-var table = "CULTURES";
-var data1 = { culture: 'B',
-    generation: 10,
-    mutations:
-        [ { type: 'SUB',
-            evidence_id: '1',
-            parent_ids: '13653',
-            seq_id: 'NC_005791',
-            position: '18978',
-            size: '84',
-            new_seq: 'TCT',
-            frequency: '1.04643704e-01',
-            gene_list: 'DP1',
-            gene_name: 'DP1',
-            gene_position: 'coding (299-382/1758 nt)',
-            gene_product: 'DNA polymerase II small subunit',
-            gene_strand: '<',
-            html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-            locus_tag: 'MMP0008' },
-            { type: 'SNP',
-                evidence_id: '2',
-                parent_ids: '110',
-                seq_id: 'NC_005791',
-                position: '19066',
-                new_seq: 'T',
-                aa_new_seq: 'K',
-                aa_position: '98',
-                aa_ref_seq: 'N',
-                codon_new_seq: 'AAA',
-                codon_number: '98',
-                codon_position: '3',
-                codon_ref_seq: 'AAT',
-                frequency: '5.73153496e-02',
-                gene_list: 'DP1',
-                gene_name: 'DP1',
-                gene_position: '294',
-                gene_product: 'DNA polymerase II small subunit',
-                gene_strand: '<',
-                html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-                locus_tag: 'MMP0008',
-                snp_type: 'nonsynonymous',
-                transl_table: '11' }]};
-
-var data2 = { culture: 'B',
-    generation: 100,
-    mutations:
-        [ { type: 'SUB',
-            evidence_id: '1',
-            parent_ids: '13653',
-            seq_id: 'NC_005791',
-            position: '18978',
-            size: '84',
-            new_seq: 'TCT',
-            frequency: '1.04643704e-01',
-            gene_list: 'DP1',
-            gene_name: 'DP1',
-            gene_position: 'coding (299-382/1758 nt)',
-            gene_product: 'DNA polymerase II small subunit',
-            gene_strand: '<',
-            html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-            locus_tag: 'MMP0008' },
-            { type: 'SNP',
-                evidence_id: '2',
-                parent_ids: '110',
-                seq_id: 'NC_005791',
-                position: '19066',
-                new_seq: 'T',
-                aa_new_seq: 'K',
-                aa_position: '98',
-                aa_ref_seq: 'N',
-                codon_new_seq: 'AAA',
-                codon_number: '98',
-                codon_position: '3',
-                codon_ref_seq: 'AAT',
-                frequency: '5.73153496e-02',
-                gene_list: 'DP1',
-                gene_name: 'DP1',
-                gene_position: '294',
-                gene_product: 'DNA polymerase II small subunit',
-                gene_strand: '<',
-                html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-                locus_tag: 'MMP0008',
-                snp_type: 'nonsynonymous',
-                transl_table: '11' }]} ;
-
-var data3 = { culture: 'C',
-    generation: 10,
-    mutations:
-        [ { type: 'SUB',
-            evidence_id: '1',
-            parent_ids: '13653',
-            seq_id: 'NC_005791',
-            position: '18978',
-            size: '84',
-            new_seq: 'TCT',
-            frequency: '1.04643704e-01',
-            gene_list: 'DP1',
-            gene_name: 'DP1',
-            gene_position: 'coding (299-382/1758 nt)',
-            gene_product: 'DNA polymerase II small subunit',
-            gene_strand: '<',
-            html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-            locus_tag: 'MMP0008' },
-            { type: 'SNP',
-                evidence_id: '2',
-                parent_ids: '110',
-                seq_id: 'NC_005791',
-                position: '19066',
-                new_seq: 'T',
-                aa_new_seq: 'K',
-                aa_position: '98',
-                aa_ref_seq: 'N',
-                codon_new_seq: 'AAA',
-                codon_number: '98',
-                codon_position: '3',
-                codon_ref_seq: 'AAT',
-                frequency: '5.73153496e-02',
-                gene_list: 'DP1',
-                gene_name: 'DP1',
-                gene_position: '294',
-                gene_product: 'DNA polymerase II small subunit',
-                gene_strand: '<',
-                html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-                locus_tag: 'MMP0008',
-                snp_type: 'nonsynonymous',
-                transl_table: '11' }]};
-
-var data4 = { culture: 'C',
-    generation: 100,
-    mutations:
-        [ { type: 'SUB',
-            evidence_id: '1',
-            parent_ids: '13653',
-            seq_id: 'NC_005791',
-            position: '18978',
-            size: '84',
-            new_seq: 'TCT',
-            frequency: '1.04643704e-01',
-            gene_list: 'DP1',
-            gene_name: 'DP1',
-            gene_position: 'coding (299-382/1758 nt)',
-            gene_product: 'DNA polymerase II small subunit',
-            gene_strand: '<',
-            html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-            locus_tag: 'MMP0008' },
-            { type: 'SNP',
-                evidence_id: '2',
-                parent_ids: '110',
-                seq_id: 'NC_005791',
-                position: '19066',
-                new_seq: 'T',
-                aa_new_seq: 'K',
-                aa_position: '98',
-                aa_ref_seq: 'N',
-                codon_new_seq: 'AAA',
-                codon_number: '98',
-                codon_position: '3',
-                codon_ref_seq: 'AAT',
-                frequency: '5.73153496e-02',
-                gene_list: 'DP1',
-                gene_name: 'DP1',
-                gene_position: '294',
-                gene_product: 'DNA polymerase II small subunit',
-                gene_strand: '<',
-                html_gene_name: '<i>DP1</i>&nbsp;&larr;',
-                locus_tag: 'MMP0008',
-                snp_type: 'nonsynonymous',
-                transl_table: '11' }]};
-
-
-var multiDocs = [data1, data2, data3, data4];
+// var table = "CULTURES";
+// var data1 = { culture: 'B',
+//     generation: 10,
+//     mutations:
+//         [ { type: 'SUB',
+//             evidence_id: '1',
+//             parent_ids: '13653',
+//             seq_id: 'NC_005791',
+//             position: '18978',
+//             size: '84',
+//             new_seq: 'TCT',
+//             frequency: '1.04643704e-01',
+//             gene_list: 'DP1',
+//             gene_name: 'DP1',
+//             gene_position: 'coding (299-382/1758 nt)',
+//             gene_product: 'DNA polymerase II small subunit',
+//             gene_strand: '<',
+//             html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//             locus_tag: 'MMP0008' },
+//             { type: 'SNP',
+//                 evidence_id: '2',
+//                 parent_ids: '110',
+//                 seq_id: 'NC_005791',
+//                 position: '19066',
+//                 new_seq: 'T',
+//                 aa_new_seq: 'K',
+//                 aa_position: '98',
+//                 aa_ref_seq: 'N',
+//                 codon_new_seq: 'AAA',
+//                 codon_number: '98',
+//                 codon_position: '3',
+//                 codon_ref_seq: 'AAT',
+//                 frequency: '5.73153496e-02',
+//                 gene_list: 'DP1',
+//                 gene_name: 'DP1',
+//                 gene_position: '294',
+//                 gene_product: 'DNA polymerase II small subunit',
+//                 gene_strand: '<',
+//                 html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//                 locus_tag: 'MMP0008',
+//                 snp_type: 'nonsynonymous',
+//                 transl_table: '11' }]};
+//
+// var data2 = { culture: 'B',
+//     generation: 100,
+//     mutations:
+//         [ { type: 'SUB',
+//             evidence_id: '1',
+//             parent_ids: '13653',
+//             seq_id: 'NC_005791',
+//             position: '18978',
+//             size: '84',
+//             new_seq: 'TCT',
+//             frequency: '1.04643704e-01',
+//             gene_list: 'DP1',
+//             gene_name: 'DP1',
+//             gene_position: 'coding (299-382/1758 nt)',
+//             gene_product: 'DNA polymerase II small subunit',
+//             gene_strand: '<',
+//             html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//             locus_tag: 'MMP0008' },
+//             { type: 'SNP',
+//                 evidence_id: '2',
+//                 parent_ids: '110',
+//                 seq_id: 'NC_005791',
+//                 position: '19066',
+//                 new_seq: 'T',
+//                 aa_new_seq: 'K',
+//                 aa_position: '98',
+//                 aa_ref_seq: 'N',
+//                 codon_new_seq: 'AAA',
+//                 codon_number: '98',
+//                 codon_position: '3',
+//                 codon_ref_seq: 'AAT',
+//                 frequency: '5.73153496e-02',
+//                 gene_list: 'DP1',
+//                 gene_name: 'DP1',
+//                 gene_position: '294',
+//                 gene_product: 'DNA polymerase II small subunit',
+//                 gene_strand: '<',
+//                 html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//                 locus_tag: 'MMP0008',
+//                 snp_type: 'nonsynonymous',
+//                 transl_table: '11' }]} ;
+//
+// var data3 = { culture: 'C',
+//     generation: 10,
+//     mutations:
+//         [ { type: 'SUB',
+//             evidence_id: '1',
+//             parent_ids: '13653',
+//             seq_id: 'NC_005791',
+//             position: '18978',
+//             size: '84',
+//             new_seq: 'TCT',
+//             frequency: '1.04643704e-01',
+//             gene_list: 'DP1',
+//             gene_name: 'DP1',
+//             gene_position: 'coding (299-382/1758 nt)',
+//             gene_product: 'DNA polymerase II small subunit',
+//             gene_strand: '<',
+//             html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//             locus_tag: 'MMP0008' },
+//             { type: 'SNP',
+//                 evidence_id: '2',
+//                 parent_ids: '110',
+//                 seq_id: 'NC_005791',
+//                 position: '19066',
+//                 new_seq: 'T',
+//                 aa_new_seq: 'K',
+//                 aa_position: '98',
+//                 aa_ref_seq: 'N',
+//                 codon_new_seq: 'AAA',
+//                 codon_number: '98',
+//                 codon_position: '3',
+//                 codon_ref_seq: 'AAT',
+//                 frequency: '5.73153496e-02',
+//                 gene_list: 'DP1',
+//                 gene_name: 'DP1',
+//                 gene_position: '294',
+//                 gene_product: 'DNA polymerase II small subunit',
+//                 gene_strand: '<',
+//                 html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//                 locus_tag: 'MMP0008',
+//                 snp_type: 'nonsynonymous',
+//                 transl_table: '11' }]};
+//
+// var data4 = { culture: 'C',
+//     generation: 100,
+//     mutations:
+//         [ { type: 'SUB',
+//             evidence_id: '1',
+//             parent_ids: '13653',
+//             seq_id: 'NC_005791',
+//             position: '18978',
+//             size: '84',
+//             new_seq: 'TCT',
+//             frequency: '1.04643704e-01',
+//             gene_list: 'DP1',
+//             gene_name: 'DP1',
+//             gene_position: 'coding (299-382/1758 nt)',
+//             gene_product: 'DNA polymerase II small subunit',
+//             gene_strand: '<',
+//             html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//             locus_tag: 'MMP0008' },
+//             { type: 'SNP',
+//                 evidence_id: '2',
+//                 parent_ids: '110',
+//                 seq_id: 'NC_005791',
+//                 position: '19066',
+//                 new_seq: 'T',
+//                 aa_new_seq: 'K',
+//                 aa_position: '98',
+//                 aa_ref_seq: 'N',
+//                 codon_new_seq: 'AAA',
+//                 codon_number: '98',
+//                 codon_position: '3',
+//                 codon_ref_seq: 'AAT',
+//                 frequency: '5.73153496e-02',
+//                 gene_list: 'DP1',
+//                 gene_name: 'DP1',
+//                 gene_position: '294',
+//                 gene_product: 'DNA polymerase II small subunit',
+//                 gene_strand: '<',
+//                 html_gene_name: '<i>DP1</i>&nbsp;&larr;',
+//                 locus_tag: 'MMP0008',
+//                 snp_type: 'nonsynonymous',
+//                 transl_table: '11' }]};
+//
+//
+// var multiDocs = [data1, data2, data3, data4];
 // insertOneDoc(table, data[0]);
 // insertDocs(table, multiDocs);
 // var temp = null;
@@ -416,5 +444,6 @@ module.exports = {
     queryCultures: queryCultures,
     queryMutations: queryMutations,
     queryEvidences: queryEvidences,
-    renameCollection: renameCollection
+    renameCollection: renameCollection,
+    queryTables: queryTables
 }

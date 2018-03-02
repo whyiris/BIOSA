@@ -22,9 +22,9 @@ var db = require('./db');
 //     console.log(result);
 // });
 
-db.queryTables(function(err, result){
-   console.log(err);
-   console.log(result);
-});
+// db.queryTables(function(err, result){
+//    console.log(err);
+//    console.log(result);
+// });
 
 // db.renameCollection("testing_CULTURES", "02232018_CULTURES");

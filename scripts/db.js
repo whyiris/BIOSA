@@ -42,7 +42,7 @@ function renameCollection(origName, newName){
 }
 
 // ===================== query functions ===========================
-// queryTables returns a list of table names
+// queryTables returns a list of table names in sorted order
 function queryTables(callback){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -60,7 +60,7 @@ function queryTables(callback){
     });
 }
 
-// queryGenerations returns a list of generations (int)
+// queryGenerations returns a list of generations in sorted order (int)
 function queryGenerations(table, culture, callback){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -70,10 +70,11 @@ function queryGenerations(table, culture, callback){
             if (err) throw err;
             var genArr = [];
             for(var i = 0; i < result.length; i++){
-                genArr.push(result[i].generation);
+                var int = parseInt(result[i].generation);
+                genArr.push(int);
             }
             db.close();
-            callback(err, genArr.sort());
+            callback(err, genArr.sort(sortNumber));
         });
     });
 }
@@ -100,10 +101,6 @@ function queryCultures(table, type, callback){
             callback(err, uniqueArr.sort());
         });
     });
-}
-
-function findUnique(value, index, self) {
-    return self.indexOf(value) === index;
 }
 
 // queryMutations returns a list of mutation objects
@@ -154,7 +151,13 @@ function queryEvidences(table, culture, evidenceType, callback){
     });
 }
 
+function sortNumber(a,b) {
+    return a - b;
+}
 
+function findUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
 
 // =================== Old functions ===========================
 // culture and generation are arrays

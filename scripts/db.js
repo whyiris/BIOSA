@@ -28,88 +28,140 @@ function insertDocs(table, document)
     }
 }
 
-
-function queryOneCult(table, culture, generation){
-
+// ===================== rename collection ===========================
+function renameCollection(origName, newName){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("ourDB");
-        var query = {culture:culture, generation:generation};
-        console.log(query);
+        var dbo = db.db("BIOSA");
+        dbo.collection(origName).rename(newName, function(err, res){
+            if (err) throw err;
+            console.log("Collection has been renamed!");
+            db.close();
+        })
+    });
+}
+
+// ===================== query functions ===========================
+// queryGenerations returns a list of generations (int)
+function queryGenerations(table, culture, callback){
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("BIOSA");
+        var query = {culture:culture};
         dbo.collection(table).find(query).toArray(function(err, result) {
             if (err) throw err;
+            var genArr = [];
+            for(var i = 0; i < result.length; i++){
+                genArr.push(result[i].generation);
+            }
             db.close();
-            console.log(result);
-            // return result;
+            callback(err, genArr);
         });
     });
 }
 
-
-function queryDB(table){
-
+// queryCultures returns a list of cultures (string)
+function queryCultures(table, type, callback){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("ourDB");
-        dbo.collection(table).find({}).toArray(function(err, result) {
+        var dbo = db.db("BIOSA");
+        var query = {type: type};
+        dbo.collection(table).find(query).toArray(function(err, result) {
             if (err) throw err;
+            var cultArr = [];
+            for(var i = 0; i < result.length; i++){
+                cultArr.push(result[i].culture);
+            }
             db.close();
-            console.log(result);
-            // return result;
+            callback(err, cultArr);
         });
     });
 }
 
-// function queryCults(table, cultures, generations) {
-//     var async = require('async');
-//     async.waterfall([
-//         function(callback){
-//             var resultArr = [];
-//             MongoClient.connect(url, function (err, db) {
-//                 if (err) throw err;
-//                 var dbo = db.db("ourDB");
-//                 for (var i = 0; i < cultures.length; i++) {
-//                     for (var j = 0; j < generations.length; j++) {
-//                         var query = {culture: cultures[i], generation: generations[j]};
-//                         // console.log(query);
-//                         callback(null, dbo.collection(table).find(query))
-//                     }
-//                 }
-//                 db.close();
-//             });
-//         }
-//     ], function (err, result) {
-//         console.log(result);
-//     })
-//
-// }
-
-
-// culture and generation are arrays
-function queryCults(table, cultures, generations) {
-    var resultArr = [];
-    MongoClient.connect(url, function (err, db) {
+// queryMutations returns a list of mutation objects
+function queryMutations(table, culture, mutationType, callback){
+    MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("ourDB");
-        for (var i = 0; i < cultures.length; i++) {
-            for (var j = 0; j < generations.length; j++) {
-                var query = {culture: cultures[i], generation: generations[j]};
-                // console.log(query);
-                dbo.collection(table).find(query).toArray(function (err, result) {
-                    if (err) throw err;
-                    // console.log(result);
-                    // resultArr.push(JSON.parse(JSON.stringify(result)));
-                    resultArr.push(result);
-                    // console.log("resultArr");
-                    // console.log(resultArr);
+        var dbo = db.db("BIOSA");
+        var query = {culture:culture};
+        dbo.collection(table).find(query).toArray(function(err, result) {
+            if (err) throw err;
+            var mutationArr = [];
+            for (var i = 0; i < result.length; ){
 
-                });
             }
+
+            db.close();
         }
-        console.log(resultArr);
+    });
+}
+
+// queryEvidences returns a list of evidence objects
+function queryEvidences(table, culture, evidenceType, callback){
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("BIOSA");
         db.close();
     });
 }
+
+
+
+// =================== Old functions ===========================
+// culture and generation are arrays
+// function queryCults(table, cultures, generations) {
+//
+//     MongoClient.connect(url, function (err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("ourDB");
+//         for (var i = 0; i < cultures.length; i++) {
+//             for (var j = 0; j < generations.length; j++) {
+//                 var query = {culture: cultures[i], generation: generations[j]};
+//                 // console.log(query);
+//                 dbo.collection(table).find(query).toArray(function (err, result) {
+//                     if (err) throw err;
+//                     // console.log(result);
+//                     // resultArr.push(JSON.parse(JSON.stringify(result)));
+//                     // console.log("resultArr");
+//                     // console.log(resultArr);
+//
+//                 });
+//             }
+//         }
+//         //console.log(resultArr);
+//         db.close();
+//     });
+// }
+
+// function queryOneCult(table, culture, generation, callback){
+//
+//     MongoClient.connect(url, function(err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("BIOSA");
+//         var query = {culture:culture, generation:generation};
+//         // console.log(query);
+//         dbo.collection(table).find(query).toArray(function(err, result) {
+//             if (err) throw err;
+//             db.close();
+//             callback(null, result);
+//             // return result;
+//         });
+//     });
+// }
+
+// function queryDB(table){
+//
+//     MongoClient.connect(url, function(err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("ourDB");
+//         dbo.collection(table).find({}).toArray(function(err, result) {
+//             if (err) throw err;
+//             db.close();
+//             console.log(result);
+//             // return result;
+//         });
+//     });
+// }
 
 
 // ---------------------------- below codes are for testing
@@ -286,9 +338,19 @@ var data4 = { culture: 'C',
 var multiDocs = [data1, data2, data3, data4];
 // insertOneDoc(table, data[0]);
 // insertDocs(table, multiDocs);
+// var temp = null;
+// queryOneCult(table, "B", 10, function(err, final){
+//     // if (err){
+//     //     console.log(err);
+//     // }else{
+//         console.log("result!!!!!");
+//         console.log(final);
+//     // }
+// });
 
-// queryOneCult(table, "B", 10);
-// queryCults(table, ["B","C"], [10, 100]);
+// queryCults(table, ["B","C"], [10, 100], function(){
+//     console.log(resultArr);
+// });
 // queryDB(table);
 // ======= testing array.push() ===========
 // var test = [];
@@ -301,12 +363,36 @@ var multiDocs = [data1, data2, data3, data4];
 // }
 // console.log(test);
 
+// console.log('Program Start');
+//
+// var async = require('async');
+// async.waterfall([
+//     function (callback) {
+//         console.log('First Step --> ');
+//         callback(null, '1', '2');
+//     },
+//     function (arg1, arg2, callback) {
+//         console.log('Second Step --> ' + arg1 + ' ' + arg2);
+//         callback(null, '3');
+//     },
+//     function (arg1, callback) {
+//         console.log('Third Step --> ' + arg1);
+//         callback(null, 'final result');
+//     }
+// ], function (err, result) {
+//     console.log('Main Callback --> ' + result);
+// });
+//
+// console.log('Program End');
 
 module.exports = {
 
-    insertOneDoc: insertOneDoc,
+    // insertOneDoc: insertOneDoc,
     insertDocs: insertDocs,
-    queryDB: queryDB,
-    queryCults: queryCults,
-    queryOneCult: queryOneCult
+    // queryDB: queryDB,
+    // queryCults: queryCults,
+    queryGenerations: queryGenerations,
+    queryCultures: queryCultures,
+    queryMutations: queryMutations,
+    renameCollection: renameCollection
 }

@@ -86,13 +86,19 @@ function queryMutations(table, culture, mutationType, callback){
         var query = {culture:culture};
         dbo.collection(table).find(query).toArray(function(err, result) {
             if (err) throw err;
-            var mutationArr = [];
-            for (var i = 0; i < result.length; ){
-
+            var resultArr = [];
+            for (var i = 0; i < result.length; i++){
+                var mutationArr = result[i].mutations;
+                for (var j = 0; j < mutationArr.length; j++){
+                    if(mutationArr[j].type == mutationType){
+                        resultArr.push(mutationArr[j]);
+                    }
+                }
             }
-
+            console.log(resultArr);
             db.close();
-        }
+            callback(err, resultArr);
+        });
     });
 }
 
@@ -101,7 +107,22 @@ function queryEvidences(table, culture, evidenceType, callback){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("BIOSA");
-        db.close();
+        var query = {culture:culture};
+        dbo.collection(table).find(query).toArray(function(err, result) {
+            if (err) throw err;
+            var resultArr = [];
+            for (var i = 0; i < result.length; i++){
+                var evidenceArr = result[i].evidences;
+                for (var j = 0; j < evidenceArr.length; j++){
+                    if(evidenceArr[j].type == evidenceType){
+                        resultArr.push(evidenceArr[j]);
+                    }
+                }
+            }
+            console.log(resultArr);
+            db.close();
+            callback(err, resultArr);
+        });
     });
 }
 
@@ -394,5 +415,6 @@ module.exports = {
     queryGenerations: queryGenerations,
     queryCultures: queryCultures,
     queryMutations: queryMutations,
+    queryEvidences: queryEvidences,
     renameCollection: renameCollection
 }

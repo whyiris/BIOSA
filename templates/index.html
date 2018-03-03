@@ -15,10 +15,63 @@
             integrity="sha256-1Q2q5hg2YXp9fYlM++sIEXOcUb8BRSDUsQ1zXvLBqmA=" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="app">
-    <h1>Hello BioSA</h1>
-    <p> HELLO </p>
+
+<div class="container" id="app">
+    <div class="begin-search">
+        <h2>Bioinformatics Sequence Analysis</h2>
+        <div class="dropdown">
+            <!-- Select dropdown button -->
+            <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Collection
+            </button>
+
+            <!-- Dropwdown menu options -->
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" v-for="collection in collections" v-on:click="getCultures">{{collection}}</a>
+            </div>
+        </div>
+        <div class="loader" v-show="loadingCoculture == true || loadingMonoculture == true">
+            <img src="/public/loader.gif">
+        </div>
+    </div>
+
+    <div class="gen-table" v-show="generationCTable != null && generationMTable != null">
+        <table id="gen-table" class="table table-bordered">
+            <thead>
+            <tr>
+                <!--<th v-for="header in headers">{{header}}</th>-->
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+                <th scope="row">HA3</th>
+                <td><div class="square gen-0"></div></td>
+                <td><div class="square gen-100"></div></td>
+                <td><div class="square gen-300"></div></td>
+                <td><div class="square gen-500"></div></td>
+                <td><div class="square gen-780"></div></td>
+                <td><div class="square gen-1000"></div></td>
+                <td><div class="square gen-compare"></div></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+
 
 
 <!-- jQuery first, then Tether, then Bootstrap JS. -->

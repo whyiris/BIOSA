@@ -1,3 +1,13 @@
+.container {
+    margin: 0 auto;
+}
+
+.begin-search {
+    margin: 0 auto;
+    width: 500px;
+    text-align: center;
+}
+
 .square {
     display: inline-block;
     height: 23px;
@@ -34,8 +44,4 @@
 
 .square.gen-compare{
     background: #00215A;
-}
-
-body{
-    background: white;
 }

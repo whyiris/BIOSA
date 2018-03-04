@@ -29,7 +29,16 @@ $(document).ready(function () {
             selectButtonMsg: "Select Collection"
         },
         methods: {
+            reset: function() {
+                this.ccGens = [];
+                this.mcGens = [];
+                this.ccHeaders = [];
+                this.mcHeaders = [];
+                this.ccList = [];
+                this.mcList = []
+            },
             getCultures: function (event) {
+                this.reset();
                 this.disableSelect = true;
                 this.selectButtonMsg = "Processing ... ";
                 this.loadingCC = true;

@@ -40,7 +40,7 @@
     <div class="entire-table">
         <!--generate Co Table-->
         <div class="gen-table" v-show="ccGens.length !== 0">
-            <table id="gen-cc-table" class="table table-bordered">
+            <table id="gen-cc-table" class="table table-bordered header-fixed">
                 <thead>
                 <tr>
                     <th v-for="header in ccHeaders">{{header}}</th>
@@ -58,7 +58,7 @@
 
         <!--generate Mono table-->
         <div class="gen-table" v-show="mcGens.length !== 0">
-            <table id="gen-mc-table" class="table table-bordered">
+            <table id="gen-mc-table" class="table table-bordered header-fixed">
                 <thead>
                 <tr>
                     <th v-for="header in mcHeaders">{{header}}</th>
@@ -75,12 +75,58 @@
         </div>
 
 
-        <!-- DUMMY TABLE !!!!!!!!! -->
+         <!--&lt;!&ndash;DUMMY TABLE !!!!!!!!!&ndash;&gt;-->
         <!--<div class="gen-table">-->
             <!--<table id="gen-mc-table" class="table">-->
                 <!--<thead>-->
                 <!--<tr>-->
                     <!--<th>Monoculture</th>-->
+                    <!--<th>0</th>-->
+                    <!--<th>100</th>-->
+                    <!--<th>300</th>-->
+                    <!--<th>500</th>-->
+                    <!--<th>780</th>-->
+                    <!--<th>1000</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+
+                <!--<tr>-->
+                    <!--<th scope="row">HA3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<th scope="row">HE3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<th scope="row">UE3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+
+        <!--<div class="gen-table">-->
+            <!--<table id="gen-cc-table" class="table">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th>Coculture</th>-->
                     <!--<th>0</th>-->
                     <!--<th>100</th>-->
                     <!--<th>300</th>-->

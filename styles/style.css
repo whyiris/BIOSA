@@ -60,32 +60,50 @@
     Entire Table container
 
 *******************************************************/
+.table {
+    margin-bottom: 0px;
+}
 .entire-table {
-    margin: 60px 0 70px 0;
+    margin: 60px 0;
 }
 .entire-table td, .entire-table th {
     text-align: center;
+    position: relative;
+    padding: 18px 5px 10px 5px;
 }
 
-#gen-mc-table {
-    margin-top: 90px;
+.entire-table div:nth-child(2) {
+    margin-top: 80px;
 }
 
-.gen-table table {
-    /*border: 6px solid #fff;*/
-    border-collapse: collapse
+.gen-table {
+    overflow:hidden;
 }
-
+.entire-table tr:hover {
+    background: #f4f7fa;
+}
+#gen-mc-table td:hover::after, #gen-mc-table td:hover::after,
+#gen-cc-table td:hover::after, #gen-cc-table td:hover::after{
+    content: "";
+    position: absolute;
+    background: #f4f7fa;
+    left: 0;
+    top: -5000px;
+    height: 10000px;
+    width: 100%;
+    z-index:-1;
+}
 
 .gen-table thead th {
-    padding: 10px 15px 15px 15px;
+    padding: 30px 0 30px 0;
     font-size: 1.4em;
 }
 
 .gen-table thead tr:nth-child(1) th:nth-child(1) {
-    font-size: 1.7em;
+    font-size: 1.6em;
     background: #E9ECEF;
     border-top-left-radius: 30px;
+    font-weight: 600;
 }
 
 .gen-table thead tr:last-child th:last-child {
@@ -97,19 +115,30 @@
     background: #E9ECEF;
 }
 
+/* first column minus the first row */
 .gen-table tbody tr th:nth-child(1) {
     font-size: 1.2em;
-    padding: 15px 0;
+    padding-top: 15px;
+}
+.table-bordered {
+    border: none;
+}
+table {
+    border-collapse: inherit;
 }
 
-.table-bordered, .table thead th {
-    border: none;
+.gen-table tr:last-child td, .gen-table tr:last-child th{
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.gen-table td:last-child {
+    border-right: 1px solid #E9ECEF;
 }
 
 /*******************************************************
 
     the rectangle green clicakle icons
-
+    TODO how to dynamically assign block of colors?
 *******************************************************/
 .square {
     display: inline-block;
@@ -167,5 +196,5 @@
 }
 
 .footer {
-    margin-bottom: 40px;
+    margin: 150px 0 50px 0;
 }

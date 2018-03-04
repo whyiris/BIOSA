@@ -18,9 +18,11 @@
     "serve-favicon": "^2.4.5",
     "vue": "^2.5.13"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.17.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

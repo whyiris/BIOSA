@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>BioSA App</title>
@@ -50,7 +50,9 @@
 
                 <tr v-for="cc in ccGens">
                     <th scope="row">{{cc.culture}}</th>
-                    <td v-for="gen in cc.generations"><div v-bind:class="'square gen-' + gen"></div></td>
+                    <td v-for="gen in cc.generations">
+                        <div v-bind:class="'square gen-' + gen"></div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -68,107 +70,106 @@
 
                 <tr v-for="mc in mcGens">
                     <th scope="row">{{mc.culture}}</th>
-                    <td v-for="gen in mc.generations"><div v-bind:class="'square gen-' + gen"></div></td>
+                    <td v-for="gen in mc.generations">
+                        <div v-bind:class="'square gen-' + gen"></div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-
-         <!--&lt;!&ndash;DUMMY TABLE !!!!!!!!!&ndash;&gt;-->
+        <!--&lt;!&ndash;DUMMY TABLE !!!!!!!!!&ndash;&gt;-->
         <!--<div class="gen-table">-->
-            <!--<table id="gen-mc-table" class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th>Monoculture</th>-->
-                    <!--<th>0</th>-->
-                    <!--<th>100</th>-->
-                    <!--<th>300</th>-->
-                    <!--<th>500</th>-->
-                    <!--<th>780</th>-->
-                    <!--<th>1000</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
+        <!--<table id="gen-mc-table" class="table">-->
+        <!--<thead>-->
+        <!--<tr>-->
+        <!--<th>Monoculture</th>-->
+        <!--<th>0</th>-->
+        <!--<th>100</th>-->
+        <!--<th>300</th>-->
+        <!--<th>500</th>-->
+        <!--<th>780</th>-->
+        <!--<th>1000</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
 
-                <!--<tr>-->
-                    <!--<th scope="row">HA3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<th scope="row">HE3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<th scope="row">UE3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
+        <!--<tr>-->
+        <!--<th scope="row">HA3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<th scope="row">HE3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<th scope="row">UE3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+        <!--</table>-->
         <!--</div>-->
 
         <!--<div class="gen-table">-->
-            <!--<table id="gen-cc-table" class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th>Coculture</th>-->
-                    <!--<th>0</th>-->
-                    <!--<th>100</th>-->
-                    <!--<th>300</th>-->
-                    <!--<th>500</th>-->
-                    <!--<th>780</th>-->
-                    <!--<th>1000</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
+        <!--<table id="gen-cc-table" class="table">-->
+        <!--<thead>-->
+        <!--<tr>-->
+        <!--<th>Coculture</th>-->
+        <!--<th>0</th>-->
+        <!--<th>100</th>-->
+        <!--<th>300</th>-->
+        <!--<th>500</th>-->
+        <!--<th>780</th>-->
+        <!--<th>1000</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
 
-                <!--<tr>-->
-                    <!--<th scope="row">HA3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<th scope="row">HE3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<th scope="row">UE3</th>-->
-                    <!--<td><div class="square gen-0"></div></td>-->
-                    <!--<td><div class="square gen-100"></div></td>-->
-                    <!--<td><div class="square gen-300"></div></td>-->
-                    <!--<td><div class="square gen-500"></div></td>-->
-                    <!--<td><div class="square gen-780"></div></td>-->
-                    <!--<td><div class="square gen-1000"></div></td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
+        <!--<tr>-->
+        <!--<th scope="row">HA3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<th scope="row">HE3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<th scope="row">UE3</th>-->
+        <!--<td><div class="square gen-0"></div></td>-->
+        <!--<td><div class="square gen-100"></div></td>-->
+        <!--<td><div class="square gen-300"></div></td>-->
+        <!--<td><div class="square gen-500"></div></td>-->
+        <!--<td><div class="square gen-780"></div></td>-->
+        <!--<td><div class="square gen-1000"></div></td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+        <!--</table>-->
         <!--</div>-->
-
-
 
 
     </div> <!-- end of entire-table -->
@@ -177,7 +178,6 @@
         <p>2018 by Conard Faraon, Lisa Kim, Sheng Lin, Wai Shum, Hoi Wu </p>
     </div>
 </div> <!-- end of entire container -->
-
 
 
 <!-- jQuery first, then Tether, then Bootstrap JS. -->

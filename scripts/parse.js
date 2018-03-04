@@ -1,7 +1,8 @@
 //http://barricklab.org/twiki/pub/Lab/ToolsBacterialGenomeResequencing/documentation/gd_format.html
 
+//TODO change attribute type of cultureType
 //------------------------------------------------------------
-// mutation
+// mutations
 var SNP = {
     type: [],
     evidence_id: [],
@@ -10,7 +11,7 @@ var SNP = {
     seq_id: [],
     position: [],
     new_seq: []
-}
+};
 
 
 var SUB = {
@@ -22,7 +23,7 @@ var SUB = {
     position: [],
     size: [],
     new_seq: []
-}
+};
 
 var DEL = {
     type: [],
@@ -31,8 +32,8 @@ var DEL = {
 
     seq_id: [],
     position: [],
-    size: [],
-}
+    size: []
+};
 
 var INS = {
     type: [],
@@ -42,9 +43,8 @@ var INS = {
     seq_id: [],
     position: [],
     new_seq: [],
-    insert_position: [],
-}
-
+    insert_position: []
+};
 
 
 function create_SNP(line) {
@@ -65,7 +65,6 @@ function create_SNP(line) {
     }
     return obj;
 }
-
 
 
 function create_SUB(line) {
@@ -131,9 +130,6 @@ function create_INS(line) {
 }
 
 
-
-
-
 //------------------------------------------------------------
 // evidence
 
@@ -147,8 +143,7 @@ var RA = {
     insert_position: [],
     ref_base: [],
     new_base: []
-}
-
+};
 
 
 var MC = {
@@ -161,8 +156,7 @@ var MC = {
     end: [],
     start_range: [],
     end_range: []
-}
-
+};
 
 
 var JC = {
@@ -177,7 +171,7 @@ var JC = {
     side_2_position: [],
     side_2_strand: [],
     overlap: []
-}
+};
 
 
 var UN = {
@@ -188,8 +182,7 @@ var UN = {
     seq_id: [],
     start: [],
     end: []
-}
-
+};
 
 
 function create_RA(line) {
@@ -213,7 +206,6 @@ function create_RA(line) {
     }
     return obj;
 }
-
 
 
 function create_MC(line) {
@@ -263,7 +255,6 @@ function create_JC(line) {
 }
 
 
-
 function create_UN(line) {
     var obj = {};
     obj['type'] = "UN";
@@ -286,121 +277,85 @@ function create_UN(line) {
 
 //-------------------------------------------------------
 
-
 const fs = require('fs');
-const readline = require('readline');
 
-
-// const rl = readline.createInterface({
-//     input: fs.createReadStream(filename),
-//     crlfDelay: Infinity
-// });
-
-
-
-
+//TODO start by passing a callback function and return a boolean
 function readFile(f) {
     var m_e_list = {};
     var file = f.split("/");
-    var filename = file[file.length-1];
-    if (file[file.length-2] == "cocultures") {
+    var filename = file[file.length - 1];
+    if (file[file.length - 2] === "cocultures") {
         m_e_list.type = "C";
-        console.log(file[file.length-2] + "typpeeeeeeeeeeeeeeeeee");
-    } else if (file[file.length-2] == "monocultures") {
+    } else if (file[file.length - 2] === "monocultures") {
         m_e_list.type = "M";
-        console.log(file[file.length-2] + "typpeeeeeeeeeeeeeeeeee");
     } else {
         m_e_list.type = "O";
     }
 
     m_e_list.culture = filename.split("_")[0];
-    // console.log(filename.split("_")[0] + "pppppppppppppppppppppp");
-
-    m_e_list.generation  = parseInt((filename.split("_"))[1].split(".")[0]);
-
+    m_e_list.generation = parseInt((filename.split("_"))[1].split(".")[0]);
 
     var lineCounter = 0;
     var mutation_list = [];
     var evidence_list = [];
 
+    //TODO reading file Async for File Uploads for user
     fs.readFileSync(f).toString().split('\n').forEach(function (line) {
         var check = line.split('\t');
-        // if (line.charAt(0) == '#') {
-        //     console.log(check[0]);
-        //     //https://stackoverflow.com/questions/6260756/how-to-stop-javascript-foreach
-        //     // no break for a forEach loop
-        //     // break;
-        // }
-        if (check[0]=='SNP' || check[0]=='SUB' ||check[0]=='DEL' ||check[0]=='INS') {
+        if (check[0] === 'SNP' || check[0] === 'SUB' || check[0] === 'DEL' || check[0] === 'INS') {
 
             var l = line.split('\t');
-            var obj = []
-            // console.log(l)
-            if (l[0] == 'SNP') {
+            var obj = [];
+
+            if (l[0] === 'SNP') {
                 obj = create_SNP(l);
             }
 
-
-            if (l[0] == 'SUB') {
+            if (l[0] === 'SUB') {
                 obj = create_SUB(l);
             }
 
-            if (l[0] == 'DEL') {
+            if (l[0] === 'DEL') {
                 obj = create_DEL(l);
             }
 
-            if (l[0] == 'INS') {
+            if (l[0] === 'INS') {
                 obj = create_INS(l);
             }
             mutation_list.push(obj);
         }
 
-
-        if (check[0] == 'RA' || check[0] == 'MC' || check[0] == 'JC' || check[0] == 'UN') {
+        if (check[0] === 'RA' || check[0] === 'MC' || check[0] === 'JC' || check[0] === 'UN') {
             var l = line.split('\t');
-            var obj = []
-            // console.log(l)
-            if (l[0] == 'RA') {
+            var obj = [];
+
+            if (l[0] === 'RA') {
                 obj = create_RA(l);
             }
-            if (l[0] == 'MC') {
+            if (l[0] === 'MC') {
                 obj = create_MC(l);
             }
-            if (l[0] == 'JC') {
+            if (l[0] === 'JC') {
                 obj = create_JC(l);
             }
-            if (l[0] == 'UN') {
+            if (l[0] === 'UN') {
                 obj = create_UN(l);
             }
-            evidence_list.push(obj)
+            evidence_list.push(obj);
         }
-
 
         lineCounter++;
     });
-    // console.log(mutation_list);
-    // console.log(evidence_list);
-    // console.log(lineCounter);
-    // console.log("---------------" + evidence_list.length);
-    // console.log(mutation_list.length);
+
     m_e_list.mutations = mutation_list;
     m_e_list.evidences = evidence_list;
-    // console.log(m_e_list);
     return m_e_list;
 }
 
-// function parse(filename){
-//     this.filename = filename;
-// }
-// var filename = "../resources/feb_23/cocultures/HA3_100.gd"
-// var temp = readFile(filename);
-// console.log(temp.mutations[0])
 
 module.exports = {
-
     readFile: readFile
-
-}
+};
 
 
 

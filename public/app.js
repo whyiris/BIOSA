@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+    //TODO add a link to the home
+    //TODO responsiveness for narrow screen
+    //TODO caching for same collections query, add cookie implementation
+    //TODO add name of the database
     new Vue({
         el: "#app",
         created: function () {
@@ -29,7 +33,7 @@ $(document).ready(function () {
             selectButtonMsg: "Select Collection"
         },
         methods: {
-            reset: function() {
+            reset: function () {
                 this.ccGens = [];
                 this.mcGens = [];
                 this.ccHeaders = [];
@@ -56,12 +60,9 @@ $(document).ready(function () {
                     dataType: "json"
                 });
                 $.when(requestCoculture, requestMonoculture).done(function (retC, retM) {
-                    // self.ccGens = _.omit(self.ccGens, 'Ancestor');
                     self.ccList = retC[0].result;
-                    self.ccList.shift();            // TODO: Ancestor is not a "culture"
+                    self.ccList.shift();   // be aware that there is a single Ancestor for all samples
                     self.mcList = retM[0].result;
-                    // console.log("ccList: ", self.ccList); // TODO: DEBUG list of cocultures
-                    // console.log("mcList: ", self.mcList); // TODO: DEBUG list of monocultures
 
                     // query generations for all monoculture and cocultures
                     var ccResult = [], ccDeferred, ccDeffereds = [];
@@ -69,8 +70,7 @@ $(document).ready(function () {
 
                     // runs when all ajax queries for mc/cc gens are finished, and resets it back
                     $(document).ajaxStop(function () {
-                        // 0 === $.active
-                        self.processResults(ccResult,"cc");
+                        self.processResults(ccResult, "cc");
                         self.processResults(mcResult, "mc");
                         self.normalizeHeader();
                         self.fillEmptySlots(self.ccGens, self.ccHeaders);
@@ -93,12 +93,6 @@ $(document).ready(function () {
                         });
                         ccDeffereds.push(ccDeferred);
                     }
-                    // $.when.apply($, ccDeffereds).then(function() { // doesn't work
-                    //         console.log(ccResult);
-                    //         self.setCCTable(ccResult);
-                    //         self.loadingCC = false;
-                    // });
-
 
                     //query for all generations from mcList
                     for (var i = 0; i < self.mcList.length; i++) {
@@ -117,20 +111,20 @@ $(document).ready(function () {
                 var self = this;
                 var tempGenList = [];
 
-                result.forEach(function(obj){
+                result.forEach(function (obj) {
                     var temp = {};
                     var currGenList = obj.result;  // list of generations for the current culture
 
-                    if(cultureType === "cc") {
+                    if (cultureType === "cc") {
                         currGenList.unshift(0);   // insert a 0th generation
                     }
                     temp["culture"] = obj.culture;
                     temp["generations"] = currGenList;
 
-                    if(cultureType === "cc") {
+                    if (cultureType === "cc") {
                         self.ccGens.push(temp);
                     }
-                    else{
+                    else {
                         self.mcGens.push(temp);
                     }
                     tempGenList = currGenList.concat(tempGenList);  // extract unique generations
@@ -138,40 +132,41 @@ $(document).ready(function () {
                 });
 
                 // set the data's
-                if(cultureType === "cc") {
+                if (cultureType === "cc") {
                     self.ccGens = _.orderBy(self.ccGens, 'culture');
                     self.ccHeaders = tempGenList;
                     self.ccHeaders.unshift("Coculture");
                 }
-                else{
+                else {
                     self.mcGens = _.orderBy(self.mcGens, 'culture');
                     self.mcHeaders = tempGenList.sort();
                     self.mcHeaders.unshift("Monoculture");
                 }
             },
-            fillEmptySlots: function(cultureGens, header) {
+            fillEmptySlots: function (cultureGens, header) {
                 var self = this;
-                var gensList = cultureGens.map(function(currCulture) {return currCulture.generations});
+                var gensList = cultureGens.map(function (currCulture) {
+                    return currCulture.generations
+                });
 
-                gensList.forEach(function(currGenList) {
-                    header.slice(1).forEach(function(currHeadGen, index) {  // header will always be >= list of gens for each culture
+                gensList.forEach(function (currGenList) {
+                    header.slice(1).forEach(function (currHeadGen, index) {  // header will always be >= list of gens for each culture
                         var otherGen = currGenList[index];
-                        if(otherGen !== currHeadGen){
-                            if(otherGen > currHeadGen) { // insert before curr Index
+                        if (otherGen !== currHeadGen) {
+                            if (otherGen > currHeadGen) { // insert before curr Index
                                 currGenList.splice(index, 0, " ");
                             }
-                            else{                        // insert after curr Index
+                            else {                        // insert after curr Index
                                 currGenList.splice(index + 1, 0, " ");
                             }
                         }
                     });
                 });
             },
-            normalizeHeader: function() {
+            normalizeHeader: function () {
                 var base;
                 var normalize;
-                var insertToList;
-                if(this.ccHeaders.length > this.mcHeaders.length) {
+                if (this.ccHeaders.length > this.mcHeaders.length) {
                     base = this.ccHeaders;
                     normalize = this.mcHeaders;
                 }
@@ -181,11 +176,11 @@ $(document).ready(function () {
                 }
 
                 var index = 1;
-                while(index < base.length) {
+                while (index < base.length) {
                     var master = base[index];
                     var child = normalize[index];
-                    if(master !== child){
-                        if(child > master) {
+                    if (master !== child) {
+                        if (child > master) {
                             normalize.splice(index, 0, master);
                         }
                         else {

@@ -10,13 +10,13 @@
     color: #fff !important;
 }
 
-.btn-secondary:hover, .btn-secondary:active,.btn-secondary:not([disabled]):not(.disabled).active,
-.btn-secondary:not([disabled]):not(.disabled):active, .show>.btn-secondary.dropdown-toggle{
+.btn-secondary:hover, .btn-secondary:active, .btn-secondary:not([disabled]):not(.disabled).active,
+.btn-secondary:not([disabled]):not(.disabled):active, .show > .btn-secondary.dropdown-toggle {
     background-color: #009c84;
     border-color: #009c84;
 }
 
-.btn-secondary:disabled{
+.btn-secondary:disabled {
     background-color: #005247;
     border-color: #005247;
 }
@@ -54,7 +54,6 @@
     cursor: pointer;
 }
 
-
 /*******************************************************
 
     Entire Table container
@@ -63,9 +62,11 @@
 .table {
     margin-bottom: 0px;
 }
+
 .entire-table {
     margin: 60px 0;
 }
+
 .entire-table td, .entire-table th {
     text-align: center;
     position: relative;
@@ -77,13 +78,15 @@
 }
 
 .gen-table {
-    overflow:hidden;
+    overflow: hidden;
 }
+
 .entire-table tr:hover {
     background: #f4f7fa;
 }
+
 #gen-mc-table td:hover::after, #gen-mc-table td:hover::after,
-#gen-cc-table td:hover::after, #gen-cc-table td:hover::after{
+#gen-cc-table td:hover::after, #gen-cc-table td:hover::after {
     content: "";
     position: absolute;
     background: #f4f7fa;
@@ -91,7 +94,7 @@
     top: -5000px;
     height: 10000px;
     width: 100%;
-    z-index:-1;
+    z-index: -1;
 }
 
 .gen-table thead th {
@@ -120,14 +123,16 @@
     font-size: 1.2em;
     padding-top: 15px;
 }
+
 .table-bordered {
     border: none;
 }
+
 table {
     border-collapse: inherit;
 }
 
-.gen-table tr:last-child td, .gen-table tr:last-child th{
+.gen-table tr:last-child td, .gen-table tr:last-child th {
     border-bottom: 1px solid #E9ECEF;
 }
 
@@ -156,41 +161,40 @@ table {
     cursor: default; /*TODO remove this*/
 }
 
-.square.gen-0{
+.square.gen-0 {
     background: #e1f0db;
 }
 
-.square.gen-100{
+.square.gen-100 {
     background: #C3E0B8;
 }
 
-.square.gen-300{
+.square.gen-300 {
     background: #A0C78F;
 }
 
-.square.gen-500{
+.square.gen-500 {
     background: #4D7A3C;
 }
 
-.square.gen-780{
-   background: #355629;
+.square.gen-780 {
+    background: #355629;
 }
 
-.square.gen-1000{
+.square.gen-1000 {
     background: #1F3318;
 }
 
-.square.gen-compare{
+.square.gen-compare {
     background: #00215A;
 }
-
 
 /*******************************************************
 
     footer
 
 *******************************************************/
-.footer p{
+.footer p {
     text-align: center;
     font-size: .8em;
 }

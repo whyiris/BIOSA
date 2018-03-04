@@ -15,7 +15,7 @@ function serviceQuery(queryObject, callback) {
         callback(null, dbParam);
     }
     else {
-        if (queryObject.hasOwnProperty("collection")) {    // query specified Table (collection from differnet dates)
+        if (queryObject.hasOwnProperty("collection")) {    // query specified Table (collection from differentt dates)
             dbParam.collection = queryObject.collection;
         }
         if (queryObject.hasOwnProperty("cultureType")) {   // query a specific culture type, either ccList or mcList

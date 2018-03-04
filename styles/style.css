@@ -1,13 +1,116 @@
-.container {
-    margin: 0 auto;
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    letter-spacing: .05em;
 }
 
+.btn-secondary {
+    background: #2eae81;
+    border-color: #00bc9e;
+    color: #fff !important;
+}
+
+.btn-secondary:hover, .btn-secondary:active,.btn-secondary:not([disabled]):not(.disabled).active,
+.btn-secondary:not([disabled]):not(.disabled):active, .show>.btn-secondary.dropdown-toggle{
+    background-color: #009c84;
+    border-color: #009c84;
+}
+
+.btn-secondary:disabled{
+    background-color: #005247;
+    border-color: #005247;
+}
+
+.loader {
+    margin-top: 30px;
+}
+
+/*******************************************************
+
+    Collection dropdown mneu
+
+*******************************************************/
 .begin-search {
-    margin: 0 auto;
-    width: 500px;
+    margin: 60px auto 0 auto;
+    width: 600px;
     text-align: center;
 }
 
+.begin-search h1 {
+    font-size: 3em;
+    margin-bottom: 40px;
+}
+
+#dropdownMenuButton {
+    cursor: pointer;
+}
+
+.select-collection .dropdown-menu {
+    width: 240.4px;
+}
+
+.select-collection .dropdown-menu .dropdown-item {
+    padding: 20px;
+    cursor: pointer;
+}
+
+
+/*******************************************************
+
+    Entire Table container
+
+*******************************************************/
+.entire-table {
+    margin: 60px 0 70px 0;
+}
+.entire-table td, .entire-table th {
+    text-align: center;
+}
+
+#gen-mc-table {
+    margin-top: 90px;
+}
+
+.gen-table table {
+    /*border: 6px solid #fff;*/
+    border-collapse: collapse
+}
+
+
+.gen-table thead th {
+    padding: 10px 15px 15px 15px;
+    font-size: 1.4em;
+}
+
+.gen-table thead tr:nth-child(1) th:nth-child(1) {
+    font-size: 1.7em;
+    background: #E9ECEF;
+    border-top-left-radius: 30px;
+}
+
+.gen-table thead tr:last-child th:last-child {
+    border-top-right-radius: 30px;
+    background: #E9ECEF;
+}
+
+.gen-table thead th:not(:first-child):not(:last-child) {
+    background: #E9ECEF;
+}
+
+.gen-table tbody tr th:nth-child(1) {
+    font-size: 1.2em;
+    padding: 15px 0;
+}
+
+.table-bordered, .table thead th {
+    border: none;
+}
+
+/*******************************************************
+
+    the rectangle green clicakle icons
+
+*******************************************************/
 .square {
     display: inline-block;
     height: 23px;
@@ -16,6 +119,12 @@
     border-style: solid;
     border-radius: 5px;
     border-color: #4D7D3D;
+    cursor: pointer; /*TODO remove this*/
+}
+
+.square.gen- {
+    border: none;
+    cursor: default; /*TODO remove this*/
 }
 
 .square.gen-0{
@@ -44,4 +153,19 @@
 
 .square.gen-compare{
     background: #00215A;
+}
+
+
+/*******************************************************
+
+    footer
+
+*******************************************************/
+.footer p{
+    text-align: center;
+    font-size: .8em;
+}
+
+.footer {
+    margin-bottom: 40px;
 }

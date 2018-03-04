@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>BioSA App</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
 
     <!-- Vue JS-->
@@ -15,62 +15,122 @@
             integrity="sha256-1Q2q5hg2YXp9fYlM++sIEXOcUb8BRSDUsQ1zXvLBqmA=" crossorigin="anonymous"></script>
 </head>
 <body>
-
+<!-- begin entire container -->
 <div class="container" id="app">
     <div class="begin-search">
-        <h2>Bioinformatics Sequence Analysis</h2>
-        <div class="dropdown">
+        <h1>Bio Sequence Analysis</h1>
+        <div class="btn-group select-collection">
             <!-- Select dropdown button -->
-            <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Select Collection
+            <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" :disabled="disableSelect === true"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{selectButtonMsg}}
             </button>
 
             <!-- Dropwdown menu options -->
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" v-for="collection in collections" v-on:click="getCultures">{{collection}}</a>
             </div>
         </div>
-        <div class="loader" v-show="loadingCoculture == true || loadingMonoculture == true">
+        <div class="loader" v-show="loading == true || loadingCC == true || loadingMC == true">
             <img src="/public/loader.gif">
         </div>
+    </div> <!-- end of begin-search -->
+
+    <!-- ENTIRE TABLE CONTAINER -->
+    <div class="entire-table">
+        <!--generate Co Table-->
+        <div class="gen-table" v-show="ccGens.length !== 0">
+            <table id="gen-cc-table" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th v-for="header in ccHeaders">{{header}}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr v-for="cc in ccGens">
+                    <th scope="row">{{cc.culture}}</th>
+                    <td v-for="gen in cc.generations"><div v-bind:class="'square gen-' + gen"></div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--generate Mono table-->
+        <div class="gen-table" v-show="mcGens.length !== 0">
+            <table id="gen-mc-table" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th v-for="header in mcHeaders">{{header}}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr v-for="mc in mcGens">
+                    <th scope="row">{{mc.culture}}</th>
+                    <td v-for="gen in mc.generations"><div v-bind:class="'square gen-' + gen"></div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- DUMMY TABLE !!!!!!!!! -->
+        <!--<div class="gen-table">-->
+            <!--<table id="gen-mc-table" class="table">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th>Monoculture</th>-->
+                    <!--<th>0</th>-->
+                    <!--<th>100</th>-->
+                    <!--<th>300</th>-->
+                    <!--<th>500</th>-->
+                    <!--<th>780</th>-->
+                    <!--<th>1000</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+
+                <!--<tr>-->
+                    <!--<th scope="row">HA3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<th scope="row">HE3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<th scope="row">UE3</th>-->
+                    <!--<td><div class="square gen-0"></div></td>-->
+                    <!--<td><div class="square gen-100"></div></td>-->
+                    <!--<td><div class="square gen-300"></div></td>-->
+                    <!--<td><div class="square gen-500"></div></td>-->
+                    <!--<td><div class="square gen-780"></div></td>-->
+                    <!--<td><div class="square gen-1000"></div></td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+
+
+
+
+    </div> <!-- end of entire-table -->
+    <div class="footer">
+        <hr>
+        <p>2018 by Conard Faraon, Lisa Kim, Sheng Lin, Wai Shum, Hoi Wu </p>
     </div>
-
-    <div class="gen-table" v-show="generationCTable != null && generationMTable != null">
-        <table id="gen-table" class="table table-bordered">
-            <thead>
-            <tr>
-                <!--<th v-for="header in headers">{{header}}</th>-->
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr>
-                <th scope="row">HA3</th>
-                <td><div class="square gen-0"></div></td>
-                <td><div class="square gen-100"></div></td>
-                <td><div class="square gen-300"></div></td>
-                <td><div class="square gen-500"></div></td>
-                <td><div class="square gen-780"></div></td>
-                <td><div class="square gen-1000"></div></td>
-                <td><div class="square gen-compare"></div></td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
+</div> <!-- end of entire container -->
 
 
 
@@ -82,7 +142,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
 
+<!-- our scripts -->
 <script src="/public/app.js"></script>
+<!-- end of script tags -->
 </body>
 </html>

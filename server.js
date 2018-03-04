@@ -16,15 +16,11 @@ app.use('/query', router); // all of our routes will be prefixed with /query
 
 // use res is talking back to client
 router.use(function(req, res, next) {
-    console.log("something is happeniningin.");
-
     next(); // make sure we go to the next routes and don't stop here
 });
 
 router.get('/', function(req, res) {
-    console.log("we are in router.get() function");
     if(Object.keys(req.query).length === 0 && req.query.constructor === Object){
-        console.log("empty object or not a object")
         res.status(404);
         res.json({
             error: "404: Empty request",
@@ -32,11 +28,8 @@ router.get('/', function(req, res) {
         })
     }
     else {
-        console.log("not an empty object")
         queryHandler.serviceQuery(req.query, function (error, result) {
-            console.log(result);
             if (result.collections) {
-                console.log("querying collections")
                 db.queryTables(function (error, result) {
                     res.json({
                         error: error,
@@ -46,7 +39,6 @@ router.get('/', function(req, res) {
             }
             else {
                 if (result.cultureType) {
-                    console.log("querying cultureYtpe");
                     db.queryCultures(result.collection, result.cultureType, function (error, result) {
                         res.json({
                             error: error,
@@ -55,10 +47,8 @@ router.get('/', function(req, res) {
                     })
                 }
                 else if (result.culture) {
-                    console.log("querying culture")
                     var culture = result.culture;
                     db.queryGenerations(result.collection, culture, function (error, result) {
-                        console.log("#@@@@@@@@@@@@@@@@@   ", culture);
                         res.json({
                             error: error,
                             culture: culture,
@@ -67,7 +57,6 @@ router.get('/', function(req, res) {
                     })
                 }
                 else{
-                    console.log("errrrrorr")
                     res.status(404);
                     res.json({
                         error: "404: Bad Request",

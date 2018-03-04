@@ -1,5 +1,4 @@
 function serviceQuery(queryObject, callback) {
-    console.log("inside serviceQuery: ", queryObject);
     var dbParam = {
         db: null,
         collections: false, // asking for all collections
@@ -19,7 +18,7 @@ function serviceQuery(queryObject, callback) {
         if (queryObject.hasOwnProperty("collection")) {    // query specified Table (collection from differnet dates)
             dbParam.collection = queryObject.collection;
         }
-        if (queryObject.hasOwnProperty("cultureType")) {   // query a specific culture type, either coculture or monoculture
+        if (queryObject.hasOwnProperty("cultureType")) {   // query a specific culture type, either ccList or mcList
             dbParam.cultureType = queryObject.cultureType;
         }
         if (queryObject.hasOwnProperty("culture")) {

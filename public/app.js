@@ -3,54 +3,80 @@ $(document).ready(function () {
     new Vue({
         el: "#app",
         created: function () {
+            this.loading = true;
             var self = this;
             $.ajax({
                 url: "query?db=BIOSA&collections",
                 dataType: "json",
                 success: function (result) {
                     self.collections = result.result;
+                    self.loading = false;
                 }
             })
         },
         data: {
             collections: null,
-            coculture: null,
-            monoculture: null,
+            ccList: null,
+            mcList: null,
             loading: false,
-            loadingCoculture: false,
-            loadingMonoculture: false,
-            generationCTable: null,
-            generationMTable: null
-
+            loadingCC: false,
+            loadingMC: false,
+            ccGens: [],
+            mcGens: [],
+            ccHeaders: [],
+            mcHeaders: [],
+            disableSelect: false,
+            selectButtonMsg: "Select Collection"
         },
         methods: {
             getCultures: function (event) {
-                this.loadingCoculture = true;
-                this.loadingMonoculture = true;
+                this.disableSelect = true;
+                this.selectButtonMsg = "Processing ... ";
+                this.loadingCC = true;
+                this.loadingMC = true;
                 var collection = event.target.textContent;
                 var self = this;
+
+                // querying for ccList and mcList documents, we can't assume we know all cultures ahead of time
                 var requestCoculture = $.ajax({
                     url: "query?db=BIOSA&collection=" + collection + "&cultureType=C",
                     dataType: "json"
                 });
-
                 var requestMonoculture = $.ajax({
                     url: "query?db=BIOSA&collection=" + collection + "&cultureType=M",
                     dataType: "json"
                 });
-
                 $.when(requestCoculture, requestMonoculture).done(function (retC, retM) {
-                    self.coculture = retC[0].result;
-                    self.monoculture = retM[0].result;
+                    // self.ccGens = _.omit(self.ccGens, 'Ancestor');
+                    self.ccList = retC[0].result;
+                    self.ccList.shift();            // TODO: Ancestor is not a "culture"
+                    self.mcList = retM[0].result;
+                    // console.log("ccList: ", self.ccList); // TODO: DEBUG list of cocultures
+                    // console.log("mcList: ", self.mcList); // TODO: DEBUG list of monocultures
 
-
-
+                    // query generations for all monoculture and cocultures
                     var ccResult = [], ccDeferred, ccDeffereds = [];
                     var mcResult = [], mcDeferred, mcDeffereds = [];
 
-                    for (var i = 0; i < self.coculture.length; i++) {
+                    // runs when all ajax queries for mc/cc gens are finished, and resets it back
+                    $(document).ajaxStop(function () {
+                        // 0 === $.active
+                        self.processResults(ccResult,"cc");
+                        self.processResults(mcResult, "mc");
+                        self.normalizeHeader();
+                        self.fillEmptySlots(self.ccGens, self.ccHeaders);
+                        self.fillEmptySlots(self.mcGens, self.mcHeaders);
+                        self.loadingMC = false;
+                        self.loadingCC = false;
+                        self.disableSelect = false;
+                        self.selectButtonMsg = "Select Collection";
+                        $(this).off("ajaxStop");
+                    });
+
+                    // query for all generations from cococultures
+                    for (var i = 0; i < self.ccList.length; i++) {
                         deferred = $.ajax({
-                            url: "query?db=BIOSA&collection=" + collection + "&culture=" + self.coculture[i],
+                            url: "query?db=BIOSA&collection=" + collection + "&culture=" + self.ccList[i],
                             dataType: "json",
                             success: function (result) {
                                 ccResult.push(result);
@@ -58,14 +84,17 @@ $(document).ready(function () {
                         });
                         ccDeffereds.push(ccDeferred);
                     }
-                    $.when.apply($, ccDeffereds).then(function() {
-                        console.log(ccResult);
-                        self.loadingCoculture = false;
-                    });
+                    // $.when.apply($, ccDeffereds).then(function() { // doesn't work
+                    //         console.log(ccResult);
+                    //         self.setCCTable(ccResult);
+                    //         self.loadingCC = false;
+                    // });
 
-                    for (var i = 0; i < self.monoculture.length; i++) {
+
+                    //query for all generations from mcList
+                    for (var i = 0; i < self.mcList.length; i++) {
                         deferred = $.ajax({
-                            url: "query?db=BIOSA&collection=" + collection + "&culture=" + self.monoculture[i],
+                            url: "query?db=BIOSA&collection=" + collection + "&culture=" + self.mcList[i],
                             dataType: "json",
                             success: function (result) {
                                 mcResult.push(result);
@@ -73,53 +102,90 @@ $(document).ready(function () {
                         });
                         mcDeffereds.push(mcDeferred);
                     }
-                    $.when.apply($, mcDeffereds).then(function() {
-                        console.log(mcResult);
-                        self.loadingMonoculture = false;
-                    })
-
                 });
             },
-            setCCTable: function (genList) {
-                var temp = {};
+            processResults: function (result, cultureType) {
                 var self = this;
-                // console.log("genlist: ", genList);
-                // console.log("test: ", genList[1]);
-                // console.log(genList.responseJSON);
-                // genList.forEach(function(generation){
-                //     generation.responseJSON.forEach(function(response){
-                //         temp[response.culture] = response.result;
-                //         self.generationCTable.push(temp);
-                //     });
-                // });
-                // console.log(self.generationCTable)
+                var tempGenList = [];
 
+                result.forEach(function(obj){
+                    var temp = {};
+                    var currGenList = obj.result;  // list of generations for the current culture
 
-                // console.log("list: " , typeof(genList[3]), " $$ ", genList[3])
-                // console.log("JSON: ", genList[3].promise)
-                // console.log("JSON: ", genList[3].responseJSON)
-                // console.log("culture: ", genList[3].responseJSON.culture);
-                // console.log("result: ", genList[3].responseJSON.result);
-                // console.log("############################")
-                //
-                // for(var i in genList) {
-                //     console.log("############################")
-                //     console.log("list: " , genList[i])
-                //     console.log("JSON: ", genList[i].responseJSON)
-                //     console.log("culture: ", genList[i].responseJSON.culture);
-                //     console.log("result: ", genList[i].responseJSON.result);
-                //     // temp.genList[i].responseJSON.culture = genList[i].responseJSON.result;
-                //     // console.log(i, " ", temp)
-                //     // self.generationCTable.push(temp);
-                // }
-                // console.log(self.generationCTable)
-                for (var i = 0; i < genList.length; i++) {
-                    console.log(genList[i])
+                    if(cultureType === "cc") {
+                        currGenList.unshift(0);   // insert a 0th generation
+                    }
+                    temp["culture"] = obj.culture;
+                    temp["generations"] = currGenList;
 
-                    console.log(genList[i].response)
+                    if(cultureType === "cc") {
+                        self.ccGens.push(temp);
+                    }
+                    else{
+                        self.mcGens.push(temp);
+                    }
+                    tempGenList = currGenList.concat(tempGenList);  // extract unique generations
+                    tempGenList = _.uniq(tempGenList);
+                });
+
+                // set the data's
+                if(cultureType === "cc") {
+                    self.ccGens = _.orderBy(self.ccGens, 'culture');
+                    self.ccHeaders = tempGenList;
+                    self.ccHeaders.unshift("Coculture");
+                }
+                else{
+                    self.mcGens = _.orderBy(self.mcGens, 'culture');
+                    self.mcHeaders = tempGenList.sort();
+                    self.mcHeaders.unshift("Monoculture");
+                }
+            },
+            fillEmptySlots: function(cultureGens, header) {
+                var self = this;
+                var gensList = cultureGens.map(function(currCulture) {return currCulture.generations});
+
+                gensList.forEach(function(currGenList) {
+                    header.slice(1).forEach(function(currHeadGen, index) {  // header will always be >= list of gens for each culture
+                        var otherGen = currGenList[index];
+                        if(otherGen !== currHeadGen){
+                            if(otherGen > currHeadGen) { // insert before curr Index
+                                currGenList.splice(index, 0, " ");
+                            }
+                            else{                        // insert after curr Index
+                                currGenList.splice(index + 1, 0, " ");
+                            }
+                        }
+                    });
+                });
+            },
+            normalizeHeader: function() {
+                var base;
+                var normalize;
+                var insertToList;
+                if(this.ccHeaders.length > this.mcHeaders.length) {
+                    base = this.ccHeaders;
+                    normalize = this.mcHeaders;
+                }
+                else {
+                    base = this.mcHeaders;
+                    normalize = this.ccHeaders;
+                }
+
+                var index = 1;
+                while(index < base.length) {
+                    var master = base[index];
+                    var child = normalize[index];
+                    if(master !== child){
+                        if(child > master) {
+                            normalize.splice(index, 0, master);
+                        }
+                        else {
+                            normalize.splice(index + 1, 0, master);
+                        }
+                    }
+                    index++;
                 }
             }
-
         }
     });
 });

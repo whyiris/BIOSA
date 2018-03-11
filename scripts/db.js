@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/"; //Change the port for deployment.
-var dbName = "ourDB";
+var dbName = "BIOSA";
 
 
 //TODO add document about parameters

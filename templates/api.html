@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>BioSA API</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="../../../../../Applications/MAMP/htdocs/BioSA_Api_Doc/api.css">
+</head>
+<body>
+<!------------------------------------ START -------------------------------------->
+<!--TODO refactor CDNs-->
+<!--TODO change URI-->
+
+<div class="container" id="api-container">
+    <!---------------------------------------- FIXED MENU BAR ---------------------------------------->
+    <div class="navbar-container">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">BioSA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    </div>
+
+
+    <!---------------------------------------- LEFT SIDEBAR ANCHOR LINKS ---------------------------------------->
+    <div class="row" id="api-columns">
+        <div class="col-sm" id="left-col">
+            <ul>
+                <h6>Overview</h6>
+                <li><a href="#summary">Summary</a></li>
+                <li><a href="#endpoints">Endpoints</a></li>
+                <li><a href="#availableParams">Available Parameters</a></li>
+                <li><a href="#paramExplained">Parameters Explained</a></li>
+            </ul>
+            <ul>
+                <h6>Available Query</h6>
+                <li><a href="#getOneCol">Get One Collection</a></li>
+                <li><a href="#getAllCol">Get All Collections</a></li>
+                <li><a href="#getCultType">Get Culture Type</a></li>
+                <li><a href="#getSpecCult">Get Specific Culture</a></li>
+            </ul>
+        </div> <!-- end of left column-->
+
+
+        <!---------------------------------------- RIGHT COLUMN STUFF ---------------------------------------->
+        <div class="col-sm" id="right-col">
+            <section id="summary">
+                <h2>Summary</h2>
+
+                <p>This overview will give you some idea of what data is available, how to find what you need, and what you will see when you make a request to us.</p>
+
+                <p>The easiest way to see what data is included is to explore the data. You can build complex queries quickly and browse the results.</p>
+
+                <p>Please ensure that you read the guide for polling applications below before starting.</p>
+
+                <p>Results are returned in JSON format.</p>
+            </section>
+
+            <!---------------------------------------- ENDPOINTS ---------------------------------------->
+            <section id="endpoints">
+                <h2>Endpoints</h2>
+                <p>We provide several endpoints to retrieve different items:</p>
+
+                <ul>
+                    <li>All Collections</li>
+                    <li>One Collection</li>
+                    <li>Culture Types</li>
+                    <li>Specific Culture</li>
+                </ul>
+
+                <p>For each endpoint:</p>
+                <ul>
+                    <li>Results are not filterable at this moment</li>
+                    <li>Response contains minimal detail by default but more data can be exposed using parameters in future implementations</li>
+                </ul>
+            </section>
+            <!---------------------------------------- AVAILABLE PARAM ---------------------------------------->
+            <section id="availableParams">
+                <h2>Available Parameters <span class="badge badge-secondary">case-sensitive</span></h2>
+                <p>Below are the exposed keys.</p>
+                <ul>
+                    <li>db</li>
+                    <li>collection</li>
+                    <li>collections</li>
+                    <li>culture</li>
+                    <li>cultureType</li>
+                </ul>
+            </section>
+            <!---------------------------------------- PARAMS EXPLAINED ---------------------------------------->
+            <section id="paramExplained">
+                <h2>Parameters Explained <span class="badge badge-secondary">case-sensitive</span></h2>
+
+                <h5>db</h5>
+                <p>Database to query</p>
+
+                <h5>collection</h5>
+                <p>Returns all documents from a collection</p>
+
+                <h5>colletions</h5>
+                <p>Returns all documents from all collections</p>
+
+                <h5>culture</h5>
+                <p>Specifying whether to return monocultures(M) or cocultures(C)</p>
+
+                <h5>cultureType</h5>
+                <p>Specifying what type of culture type to return, i.e: HA3</p>
+            </section>
+            <!---------------------------------------- GET ALL FROM ONE COLLECTION ---------------------------------->
+            <section id="getOneCol">
+                <h2>Get One Collection</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>Get everything in a collection</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Endpoint</th>
+                        <td>/query?db={dbName}&#38;collection={collectionName}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">HTTP Method</th>
+                        <td>GET</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Example:</th>
+                        <td>/query?db=BIOSA&#38;collection=FEB_23_2018</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+            <!---------------------------------------- GET All COLLECTIONS ---------------------------------------->
+            <section id="getAllCol">
+                <h2>Get All Collections</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>Get all collections from a database</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Endpoint</th>
+                        <td>/query?db={dbName}&#38;collections</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">HTTP Method</th>
+                        <td>GET</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Example:</th>
+                        <td>/query?db=BIOSA&#38;collections</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+    
+            <!---------------------------------------- GET CULTURE TYPE ---------------------------------------->
+            <section id="getCultType">
+                <h2>Get Culture Type</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>Get documents for a specified culture type. Use <b>M</b> to get monocultures. Use <b>C</b> get get cocultures.</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Endpoint</th>
+                        <td>/query?db={dbName}&#38;collection={collectionName}&#38;cultureType={cultureType}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">HTTP Method</th>
+                        <td>GET</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Example:</th>
+                        <td>/query?db=BIOSA&#38;collection=FEB_23_2018&#38;cultureType=M</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!--------------------------------- GET SPECIFIC CUTLURE ---------------------------------------->
+            <section id="getSpecCult">
+                <h2>Get Specific Culture</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>Get all documents for a specific culture</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Endpoint</th>
+                        <td>/query?db={dbName}&#38;collection={collectionName}&#38;culture={cultureName}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">HTTP Method</th>
+                        <td>GET</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Example:</th>
+                        <td>/query?db=BIOSA&#38;collection=FEB_23_2018&#38;culture=HA3</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+            <!--------------------------------- FOOTER ---------------------------------------->
+            <div class="footer">
+                <hr>
+                <p>2018 by Conard, Lisa, Wai, Hoi Yan, Sheng</p>
+            </div>
+        </div> <!--  end of right column -->
+    </div> <!-- container for the two columns-->
+</div> <!-- end of entire container -->
+
+
+<!------------------------------------ Below this line: ALL CDN'S -------------------------------------->
+<!-- jQuery first, then Tether, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<!-- Our scripts -->
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
+</body>
+</html>

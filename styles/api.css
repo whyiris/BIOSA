@@ -1,0 +1,62 @@
+
+
+@media screen and (min-width: 768px){
+    .api-container {
+        overflow: hidden;
+    }
+
+    #left-col {
+        position: absolute;
+        top: 55px;
+        bottom: 0;
+        left: 0;
+        width: 26%;
+        overflow-y: scroll;
+        margin-top: 20px;
+    }
+
+    #right-col {
+        position: absolute;
+        top: 55px;
+        bottom: 0;
+        right: 0;
+        overflow-y: scroll;
+        width: 74%;
+        padding-left: 100px;
+        padding-right: 160px;
+    }
+
+    #right-col h2 {
+        margin-top: 40px;
+        margin-bottom: 30px;
+        position: relative;
+        left: -40px;
+    }
+
+    #left-col ul {
+        margin:40px 0;
+        margin-left: 40px;
+        list-style-type: none;
+    }
+
+    #left-col ul h6 {
+        position: relative;
+        left: -15px;
+    }
+
+    #left-col li {
+        font-size: .8em;
+    }
+
+    #right-col section {
+        padding-top: 5px;
+        margin-bottom: 80px;
+    }
+
+    #right-col section:nth-child(4) h5{
+        margin-top: 35px;
+
+    }
+
+}
+

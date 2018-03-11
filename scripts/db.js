@@ -9,17 +9,17 @@ var dbName = "BIOSA";
 // insert one doc
 function insertOneDoc(table, document, callback) {
     MongoClient.connect(url, function (err, db) {
-        try{
-            if(err){
+        try {
+            if (err) {
                 callback(err, db);
-            }else{
+            } else {
                 var ourDB = db.db(dbName);
                 ourDB.collection(table).insertOne(document, function (err, res) {
-                    if(err) callback(err, res);
+                    if (err) callback(err, res);
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });
@@ -35,7 +35,7 @@ function insertDocs(table, document, callback) {
                 var ourDB = db.db(dbName);
                 for (var i = 0; i < document.length; i++) {
                     ourDB.collection(table).insertOne(document[i], function (err, res) {
-                        if(err) callback(err, res);
+                        if (err) callback(err, res);
                     });
                 }
             }
@@ -59,7 +59,7 @@ function renameCollection(origName, newName, callback) {
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });
@@ -70,8 +70,8 @@ function renameCollection(origName, newName, callback) {
 // queryTables returns a list of table names in sorted order
 function queryTables(callback) {
     MongoClient.connect(url, function (err, db) {
-        try{
-            if(err){
+        try {
+            if (err) {
                 callback(err, db);
             } else {
                 var dbo = db.db(dbName);
@@ -88,7 +88,7 @@ function queryTables(callback) {
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });
@@ -117,7 +117,7 @@ function queryGenerations(table, culture, callback) {
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });
@@ -126,46 +126,67 @@ function queryGenerations(table, culture, callback) {
 // queryCultures returns a list of cultures that are unique in sorted order (string)
 function queryCultures(table, type, callback) {
     MongoClient.connect(url, function (err, db) {
-        try{
-            if(err){
-                callback(err, db);
-            } else {
-                var dbo = db.db(dbName);
-                var query = {type: type};
-                dbo.collection(table).find(query).toArray(function (err, result) {
-                    if(err){
-                        callback(err, result);
-                    } else {
-                        var cultArr = [];
-                        for (var i = 0; i < result.length; i++) {
-                            var culture = result[i].culture;
-                            cultArr.push(culture);
-                        }
-                        var uniqueArr = cultArr.filter(findUnique);
-                        callback(err, uniqueArr.sort());
+        var dbo = db.db(dbName);
+        var query = {type: type};
+        console.log(dbName);
+        console.log(table);
+        console.log(query);
+        dbo.collection(table).find(query).toArray(function (err, result) {
+            try {
+                if (err) {
+                    console.log(err);
+                    callback(err, result);
+                } else {
+                    console.log(result);
+                    var cultArr = [];
+                    for (var i = 0; i < result.length; i++) {
+                        var culture = result[i].culture;
+                        cultArr.push(culture);
                     }
-                });
+                    var uniqueArr = cultArr.filter(findUnique);
+                    callback(err, uniqueArr.sort());
+                }
+            } finally{
+                db.close();
             }
-        }
-        finally{
-            db.close();
-        }
+        });
+
     });
 }
+
+// queryCultures returns a list of cultures that are unique in sorted order (string)
+// function queryCultures(table, type, callback) {
+//     MongoClient.connect(url, function (err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("BIOSA");
+//         var query = {type: type};
+//         dbo.collection(table).find(query).toArray(function (err, result) {
+//             if (err) throw err;
+//             var cultArr = [];
+//             for (var i = 0; i < result.length; i++) {
+//                 var culture = result[i].culture;
+//                 cultArr.push(culture);
+//             }
+//             var uniqueArr = cultArr.filter(findUnique);
+//             db.close();
+//             callback(err, uniqueArr.sort());
+//         });
+//     });
+// }
 
 // queryMutations returns a list of mutation objects
 function queryMutations(table, culture, mutationType, callback) {
     MongoClient.connect(url, function (err, db) {
-        try{
-            if(err){
+        try {
+            if (err) {
                 callback(err, db);
-            } else{
+            } else {
                 var dbo = db.db(dbName);
                 var query = {culture: culture};
                 dbo.collection(table).find(query).toArray(function (err, result) {
-                    if(err){
+                    if (err) {
                         callback(err, result);
-                    } else{
+                    } else {
                         var resultArr = [];
                         for (var i = 0; i < result.length; i++) {
                             var mutationArr = result[i].mutations;
@@ -180,7 +201,7 @@ function queryMutations(table, culture, mutationType, callback) {
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });
@@ -189,16 +210,16 @@ function queryMutations(table, culture, mutationType, callback) {
 // queryEvidences returns a list of evidence objects
 function queryEvidences(table, culture, evidenceType, callback) {
     MongoClient.connect(url, function (err, db) {
-        try{
-            if(err){
+        try {
+            if (err) {
                 callback(err, db);
-            }else{
+            } else {
                 var dbo = db.db(dbName);
                 var query = {culture: culture};
                 dbo.collection(table).find(query).toArray(function (err, result) {
-                    if(err){
+                    if (err) {
                         callback(err, result);
-                    }else{
+                    } else {
                         var resultArr = [];
                         for (var i = 0; i < result.length; i++) {
                             var evidenceArr = result[i].evidences;
@@ -213,7 +234,7 @@ function queryEvidences(table, culture, evidenceType, callback) {
                 });
             }
         }
-        finally{
+        finally {
             db.close();
         }
     });

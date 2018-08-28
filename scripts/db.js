@@ -46,7 +46,12 @@ function insertDocs(table, document, callback) {
     });
 }
 
-// ===================== rename collection ===========================
+
+/**
+ * this function rename the name of an existed collection in the database
+ * @param {string} origName - original name of a collection
+ * @param {string} newName - new name to be used for a collection
+ */
 function renameCollection(origName, newName, callback) {
     MongoClient.connect(url, function (err, db) {
         if (err){
@@ -67,7 +72,9 @@ function renameCollection(origName, newName, callback) {
 
 
 // ===================== query functions ===========================
-// queryTables returns a list of table names in sorted order
+/**
+ * this function returns a list of collection names in the database in sorted order
+ */
 function queryTables(callback) {
     MongoClient.connect(url, function (err, db) {
         if (err) {
@@ -94,7 +101,12 @@ function queryTables(callback) {
     });
 }
 
-// queryGenerations returns a list of generations in sorted order (int)
+
+/**
+ * this function returns a list of generations (integers) in sorted order
+ * @param {string} table - database collection
+ * @param {string} culture - culture name (e.g. HA3)
+ */
 function queryGenerations(table, culture, callback) {
     MongoClient.connect(url, function (err, db) {
         if (err) {
@@ -123,7 +135,12 @@ function queryGenerations(table, culture, callback) {
     });
 }
 
-// queryCultures returns a list of cultures that are unique in sorted order (string)
+
+/**
+ * this function returns all the cultures(e.g. HA3) in a culture type(either coculture or monoculture) in sorted order
+ * @param {string} table - database collection
+ * @param {string} type - culture type (either coculture or monoculture)
+ */
 function queryCultures(table, type, callback) {
     MongoClient.connect(url, function (err, db) {
         if(err){
@@ -136,7 +153,7 @@ function queryCultures(table, type, callback) {
                     if (err) {
                         callback(err, result);
                     } else {
-                        console.log(result);
+                        // console.log(result);
                         var cultArr = [];
                         for (var i = 0; i < result.length; i++) {
                             var culture = result[i].culture;
@@ -155,30 +172,26 @@ function queryCultures(table, type, callback) {
 }
 
 
-
-// queryMutations returns a list of mutation objects
-function queryMutations(table, culture, mutationType, callback) {
+/**
+ * This function returns a list of all mutation objects (SNP, SUB, DEL, INS, MOB, AMP, CON, INV)
+ * and all evidence objects (RA, JC, MC, UN)
+ * @param {string} table - database collection
+ * @param {string} culture - culture name (e.g. HA3)
+ * @param {string} generation - generation (e.g. 100)
+ */
+function queryMutEvid(table, culture, generation, callback) {
     MongoClient.connect(url, function (err, db) {
         if (err) {
             callback(err, db);
         } else {
             var dbo = db.db(dbName);
-            var query = {culture: culture};
+            var query = {culture: culture, generation: generation};
             dbo.collection(table).find(query).toArray(function (err, result) {
                 try {
                     if (err) {
                         callback(err, result);
                     } else {
-                        var resultArr = [];
-                        for (var i = 0; i < result.length; i++) {
-                            var mutationArr = result[i].mutations;
-                            for (var j = 0; j < mutationArr.length; j++) {
-                                if (mutationArr[j].type === mutationType) {
-                                    resultArr.push(mutationArr[j]);
-                                }
-                            }
-                        }
-                        callback(err, resultArr);
+                        callback(err, result[0]);
                     }
                 }
                 finally {
@@ -189,42 +202,11 @@ function queryMutations(table, culture, mutationType, callback) {
     });
 }
 
-// queryEvidences returns a list of evidence objects
-function queryEvidences(table, culture, evidenceType, callback) {
-    MongoClient.connect(url, function (err, db) {
-        if (err) {
-            callback(err, db);
-        } else {
-            var dbo = db.db(dbName);
-            var query = {culture: culture};
-            dbo.collection(table).find(query).toArray(function (err, result) {
-                try {
-                    if (err) {
-                        callback(err, result);
-                    } else {
-                        var resultArr = [];
-                        for (var i = 0; i < result.length; i++) {
-                            var evidenceArr = result[i].evidences;
-                            for (var j = 0; j < evidenceArr.length; j++) {
-                                if (evidenceArr[j].type === evidenceType) {
-                                    resultArr.push(evidenceArr[j]);
-                                }
-                            }
-                        }
-                        callback(err, resultArr);
-                    }
-                }
-                finally {
-                    db.close();
-                }
-            });
-        }
-    });
-}
 
 function sortNumber(a, b) {
     return a - b;
 }
+
 
 function findUnique(value, index, self) {
     return self.indexOf(value) === index;
@@ -232,14 +214,16 @@ function findUnique(value, index, self) {
 
 
 module.exports = {
-
     insertOneDoc: insertOneDoc,
     insertDocs: insertDocs,
     queryGenerations: queryGenerations,
     queryCultures: queryCultures,
-    queryMutations: queryMutations,
-    queryEvidences: queryEvidences,
-    renameCollection: renameCollection,
-    queryTables: queryTables
-}
+    queryMutEvid: queryMutEvid,
+    queryTables: queryTables,
+    renameCollection: renameCollection
+};
+
+
+
+
 

@@ -45,20 +45,41 @@ router.get('/', function (req, res) {
                 });
             }
             else {
-                if (result.cultureType) {
-                    db.queryCultures(result.collection, result.cultureType, function (error, result) {
+                // This returns all the detailed data of a culture(e.g. HA3) at a generation(e.g. 100)
+                if (result.cultureType && result.culture && result.generation) {
+                    var cultureType = result.cultureType;
+                    var cultureName = result.culture;
+                    var generation = result.generation;
+
+                    // all cultures in coculture share the same generation 0 which is named Ancestor
+                    if(cultureType === "C" && generation === "0"){
+                        cultureName = "Ancestor";
+                    }
+                    db.queryMutEvid(result.collection, cultureName, parseInt(generation), function (error, result) {
                         res.json({
                             error: error,
+                            culture: cultureName,
+                            generation: generation,
                             result: result
                         })
                     })
                 }
-                else if (result.culture) {
+                // this returns all the generations of a culture(e.g. HA3)
+                else if (result.cultureType && result.culture) {
                     var culture = result.culture;
                     db.queryGenerations(result.collection, culture, function (error, result) {
                         res.json({
                             error: error,
                             culture: culture,
+                            result: result
+                        })
+                    })
+                }
+                // this returns all the cultures(e.g. HA3) in a culture type(either coculture or monoculture)
+                else if (result.cultureType) {
+                    db.queryCultures(result.collection, result.cultureType, function (error, result) {
+                        res.json({
+                            error: error,
                             result: result
                         })
                     })
@@ -103,5 +124,6 @@ app.listen(port, function () {
     console.log(__dirname);
     console.log('App listening on port 3001!');
 });
+
 
 

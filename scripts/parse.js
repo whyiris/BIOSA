@@ -46,6 +46,145 @@ var INS = {
     insert_position: []
 };
 
+var MOB = {
+    type: [],
+    evidence_id: [],
+    parent_ids: [],
+
+    seq_id: [],
+    position: [],
+    repeat_name: [],
+    strand: [],
+    duplication_size:[]
+};
+
+var AMP = {
+    type: [],
+    evidence_id: [],
+    parent_ids: [],
+
+    seq_id: [],
+    position: [],
+    size: [],
+    new_copy_number: []
+};
+
+var CON = {
+    type: [],
+    evidence_id: [],
+    parent_ids: [],
+
+    seq_id: [],
+    position: [],
+    size: [],
+    region: []
+};
+
+var INV = {
+    type: [],
+    evidence_id: [],
+    parent_ids: [],
+
+    seq_id: [],
+    position: [],
+    size: []
+};
+
+
+
+function create_INV(line) {
+    var obj = {};
+    obj['type'] = "INV";
+
+    obj['evidence_id'] = line[1];
+    obj['parent_ids'] = line[2];
+    obj['seq_id'] = line[3];
+    obj['position'] = line[4];
+    obj['size'] = line[5];
+
+
+
+    var count = 6;
+    while (count < line.length) {
+        var v = line[count].split("=");
+        obj[v[0]] = v[1];
+        count++;
+    }
+    return obj;
+}
+
+
+function create_CON(line) {
+    var obj = {};
+    obj['type'] = "CON";
+
+    obj['evidence_id'] = line[1];
+    obj['parent_ids'] = line[2];
+    obj['seq_id'] = line[3];
+    obj['position'] = line[4];
+    obj['size'] = line[5];
+    obj['region'] = line[6];
+
+
+    var count = 7;
+    while (count < line.length) {
+        var v = line[count].split("=");
+        obj[v[0]] = v[1];
+        count++;
+    }
+    return obj;
+}
+
+
+function create_AMP(line) {
+    var obj = {};
+    obj['type'] = "AMP";
+
+    obj['evidence_id'] = line[1];
+    obj['parent_ids'] = line[2];
+    obj['seq_id'] = line[3];
+    obj['position'] = line[4];
+    obj['size'] = line[5];
+    obj['new_copy_number'] = line[6];
+
+
+    var count = 7;
+    while (count < line.length) {
+        var v = line[count].split("=");
+        obj[v[0]] = v[1];
+        count++;
+    }
+    return obj;
+}
+
+
+
+function create_MOB(line) {
+    var obj = {};
+    obj['type'] = "MOB";
+
+    obj['evidence_id'] = line[1];
+    obj['parent_ids'] = line[2];
+    obj['seq_id'] = line[3];
+    obj['position'] = line[4];
+    obj['repeat_name'] = line[5];
+    obj['strand'] = line[6];
+    obj['duplication_size'] = line[7];
+
+
+    var count = 8;
+    while (count < line.length) {
+        var v = line[count].split("=");
+        obj[v[0]] = v[1];
+        count++;
+    }
+    return obj;
+}
+
+
+
+
+
 
 function create_SNP(line) {
     var obj = {};
@@ -117,10 +256,10 @@ function create_INS(line) {
     obj['seq_id'] = line[3];
     obj['position'] = line[4];
     obj['new_seq'] = line[5];
-    obj['insert_position'] = line[6];
+    // obj['insert_position'] = line[6];
 
 
-    var count = 7;
+    var count = 6;
     while (count < line.length) {
         var v = line[count].split("=");
         obj[v[0]] = v[1];
@@ -321,6 +460,22 @@ function readFile(f) {
 
             if (l[0] === 'INS') {
                 obj = create_INS(l);
+            }
+
+            if (l[0] === 'MOB') {
+                obj = create_MOB(l);
+            }
+
+            if (l[0] === 'AMP') {
+                obj = create_AMP(l);
+            }
+
+            if (l[0] === 'CON') {
+                obj = create_CON(l);
+            }
+
+            if (l[0] === 'INV') {
+                obj = create_INV(l);
             }
             mutation_list.push(obj);
         }

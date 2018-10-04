@@ -25,6 +25,10 @@
     margin-top: 30px;
 }
 
+/*.container {*/
+/*position: relative;*/
+/*}*/
+
 /*******************************************************
 
     Collection dropdown mneu
@@ -76,17 +80,20 @@
 .entire-table div:nth-child(2) {
     margin-top: 80px;
 }
-
+/*
 .gen-table {
     overflow: hidden;
 }
-
+*/
 .entire-table tr:hover {
     background: #f4f7fa;
 }
 
 #gen-mc-table td:hover::after, #gen-mc-table td:hover::after,
-#gen-cc-table td:hover::after, #gen-cc-table td:hover::after {
+#gen-cc-table td:hover::after, #gen-cc-table td:hover::after,
+#gen-ccm-table td:hover::after, #gen-ccm-table td:hover::after,
+#gen-mcm-table td:hover::after, #gen-mcm-table td:hover::after
+{
     content: "";
     position: absolute;
     background: #f4f7fa;
@@ -186,7 +193,8 @@ table {
 }
 
 .square.gen-compare {
-    background: #00215A;
+    background: #6ca7f6;
+    /*background: #00215A;*/
 }
 
 /*******************************************************
@@ -200,5 +208,8 @@ table {
 }
 
 .footer {
-    margin: 150px 0 50px 0;
+    margin: 50px 0 50px 0;
 }
+
+
+

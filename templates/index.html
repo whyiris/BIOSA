@@ -13,11 +13,12 @@
     <!-- Vue JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"
             integrity="sha256-1Q2q5hg2YXp9fYlM++sIEXOcUb8BRSDUsQ1zXvLBqmA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
 <!-- begin entire container -->
-<div class="container" id="app">
-    <div class="begin-search">
+<div class="" id="app">
+    <div class="begin-search" v-show="!reRender">
         <h1>Bio Sequence Analysis</h1>
         <div class="btn-group select-collection">
             <!-- Select dropdown button -->
@@ -40,7 +41,7 @@
     <div class="entire-table">
         <!--generate Co Table-->
         <div class="gen-table" v-show="ccGens.length !== 0">
-            <table id="gen-cc-table" class="table table-bordered header-fixed">
+            <table id="gen-cc-table" class="table table-bordered header-fixed" v-show="!reRender">
                 <thead>
                 <tr>
                     <th v-for="header in ccHeaders">{{header}}</th>
@@ -50,8 +51,21 @@
 
                 <tr v-for="cc in ccGens">
                     <th scope="row">{{cc.culture}}</th>
-                    <td v-for="gen in cc.generations">
-                        <div v-bind:class="'square gen-' + gen"></div>
+                    <td v-for="gen in cc.generations" >
+                        <div v-bind:class="'square gen-' + gen" v-if="gen!='compare'" v-on:click="generateCCTable(); reactToButtons()" >
+
+                        </div>
+                        <div v-bind:class="'square gen-' + gen" v-if="gen=='compare'" v-on:click="generateCompareTable(); reactToButtons()" >web</div>
+                        <div v-bind:class="'square gen-' + gen" v-if="gen=='compare'" v-on:click="generateCompareGraph(); reactToButtons()" >graph</div>
+
+
+                        <!--<script>-->
+                        <!--TESTER = document.getElementById('tester');-->
+                        <!--Plotly.plot( TESTER, [{-->
+                        <!--x: [1, 2, 3, 4, 5],-->
+                        <!--y: [1, 2, 4, 8, 16] }], {-->
+                        <!--margin: { t: 0 } } );-->
+                        <!--</script>-->
                     </td>
                 </tr>
                 </tbody>
@@ -60,7 +74,7 @@
 
         <!--generate Mono table-->
         <div class="gen-table" v-show="mcGens.length !== 0">
-            <table id="gen-mc-table" class="table table-bordered header-fixed">
+            <table id="gen-mc-table" class="table table-bordered header-fixed" v-show="!reRender">
                 <thead>
                 <tr>
                     <th v-for="header in mcHeaders">{{header}}</th>
@@ -71,106 +85,104 @@
                 <tr v-for="mc in mcGens">
                     <th scope="row">{{mc.culture}}</th>
                     <td v-for="gen in mc.generations">
-                        <div v-bind:class="'square gen-' + gen"></div>
+                        <div v-bind:class="'square gen-' + gen" v-on:click="generateMCTable(); reactToButtons()"></div>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <!--&lt;!&ndash;DUMMY TABLE !!!!!!!!!&ndash;&gt;-->
-        <!--<div class="gen-table">-->
-        <!--<table id="gen-mc-table" class="table">-->
-        <!--<thead>-->
-        <!--<tr>-->
-        <!--<th>Monoculture</th>-->
-        <!--<th>0</th>-->
-        <!--<th>100</th>-->
-        <!--<th>300</th>-->
-        <!--<th>500</th>-->
-        <!--<th>780</th>-->
-        <!--<th>1000</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
+        <!--generate cc predicted mutation table-->
+        <div class="gen-table" >
+            <table id="gen-ccm-table" class="table table-bordered header-fixed" v-show="reRenderCCM">
+                <thead>
+                <tr>
+                    <!--get headers for predicted mutation table-->
+                    <th v-for="header in mutation_headers" >{{header}}</th>
+                </tr>
+                </thead>
 
-        <!--<tr>-->
-        <!--<th scope="row">HA3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<th scope="row">HE3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<th scope="row">UE3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--</table>-->
-        <!--</div>-->
+                <tbody>
 
-        <!--<div class="gen-table">-->
-        <!--<table id="gen-cc-table" class="table">-->
-        <!--<thead>-->
-        <!--<tr>-->
-        <!--<th>Coculture</th>-->
-        <!--<th>0</th>-->
-        <!--<th>100</th>-->
-        <!--<th>300</th>-->
-        <!--<th>500</th>-->
-        <!--<th>780</th>-->
-        <!--<th>1000</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
+                <!--fill the predicted mutation table-->
+                <tr v-for="index in cc_predicted_mutations.length">
 
-        <!--<tr>-->
-        <!--<th scope="row">HA3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<th scope="row">HE3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<th scope="row">UE3</th>-->
-        <!--<td><div class="square gen-0"></div></td>-->
-        <!--<td><div class="square gen-100"></div></td>-->
-        <!--<td><div class="square gen-300"></div></td>-->
-        <!--<td><div class="square gen-500"></div></td>-->
-        <!--<td><div class="square gen-780"></div></td>-->
-        <!--<td><div class="square gen-1000"></div></td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--</table>-->
-        <!--</div>-->
+                    <td>{{ cc_predicted_mutations[index-1].evidence_type }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].seq_id }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].position }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].mutation_field }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].freq }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].annotation }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].gene }}</td>
+                    <td>{{ cc_predicted_mutations[index-1].description }}</td>
 
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--generate mc predicted mutation table-->
+        <div class="gen-table" >
+            <table id="gen-mcm-table" class="table table-bordered header-fixed" v-show="reRenderMCM">
+                <thead>
+                <tr>
+                    <!--print headers for predicted mutation table-->
+                    <th v-for="header in mutation_headers">{{header}}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <!--fill the predicted mutation table-->
+                <tr v-for="index in mc_predicted_mutations.length">
+                    <td>{{ mc_predicted_mutations[index-1].evidence_type }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].seq_id }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].position }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].mutation_field }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].freq }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].annotation }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].gene }}</td>
+                    <td>{{ mc_predicted_mutations[index-1].description }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--generate compare table-->
+        <div class="gen-table" >
+            <table id="gen-compare-table" class="table table-bordered header-fixed" v-show="reRenderCompareWeb">
+                <thead>
+                <tr>
+                    <!--get headers for compare table-->
+                    <th v-for="header in compare_headers">{{header}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--fill the compare table-->
+                <tr v-for="index in cc_compare_generation.length">
+                    <td>{{ cc_compare_generation[index-1].seq_id }}</td>
+                    <td>{{ cc_compare_generation[index-1].position }}</td>
+                    <td>{{ cc_compare_generation[index-1].mutation }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_0 }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_100 }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_300 }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_500 }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_780 }}</td>
+                    <td>{{ cc_compare_generation[index-1].freq_1000 }}</td>
+                    <td>{{ cc_compare_generation[index-1].annotation }}</td>
+                    <td>{{ cc_compare_generation[index-1].gene }}</td>
+                    <td>{{ cc_compare_generation[index-1].description }}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!--generate compare graph-->
+        <div class="gen-table" >
+            <!--<div> show </div>-->
+            <div id="tester" v-show="reRenderCompareGraph"></div>
+        </div>
 
     </div> <!-- end of entire-table -->
     <div class="footer">
@@ -195,3 +207,4 @@
 <!-- end of script tags -->
 </body>
 </html>
+

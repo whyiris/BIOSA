@@ -27,6 +27,7 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res) {
+    //console.log(req.query);
     if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
         res.status(404);
         res.json({
@@ -36,12 +37,14 @@ router.get('/', function (req, res) {
     }
     else {
         queryHandler.serviceQuery(req.query, function (error, result) {
+
             if (result.collections) {
                 db.queryTables(function (error, result) {
                     res.json({
                         error: error,
                         result: result
                     });
+
                 });
             }
             else {
@@ -55,34 +58,60 @@ router.get('/', function (req, res) {
                     if(cultureType === "C" && generation === "0"){
                         cultureName = "Ancestor";
                     }
-                    db.queryMutEvid(result.collection, cultureName, parseInt(generation), function (error, result) {
-                        res.json({
-                            error: error,
-                            culture: cultureName,
-                            generation: generation,
-                            result: result
-                        })
-                    })
+                    if (cultureType != "compare" && generation != "compare") {
+                        db.queryMutEvid(result.collection, cultureName, parseInt(generation), function (error, result) {
+                            res.json({
+                                error: error,
+                                culture: cultureName,
+                                generation: generation,
+                                result: result
+                            });
+                        });
+                    }
+                    if (cultureType === "compare" || generation === "compare") {
+                        db.queryCompare(result.collection, cultureName, generation, function (error, result) {
+                            res.json({
+                                error: error,
+                                culture: cultureName,
+                                generation: generation,
+                                result: result
+                            });
+                        });
+                    }
                 }
                 // this returns all the generations of a culture(e.g. HA3)
                 else if (result.cultureType && result.culture) {
                     var culture = result.culture;
-                    db.queryGenerations(result.collection, culture, function (error, result) {
+                    // db.queryGenerations(result.collection, culture, function (error, result) {
+                    //     res.json({
+                    //         error: error,
+                    //         culture: culture,
+                    //         result: result
+                    //     })
+                    // })
+                    db.queryUniqueGenerations(result.collection, culture, function (error, result) {
                         res.json({
                             error: error,
                             culture: culture,
                             result: result
-                        })
-                    })
+                        });
+                    });
                 }
                 // this returns all the cultures(e.g. HA3) in a culture type(either coculture or monoculture)
                 else if (result.cultureType) {
-                    db.queryCultures(result.collection, result.cultureType, function (error, result) {
+                    // db.queryCultures(result.collection, result.cultureType, function (error, result) {
+                    //     res.json({
+                    //         error: error,
+                    //         result: result
+                    //     })
+                    //
+                    // })
+                    db.queryUniqueCulture(result.collection, result.cultureType, function (error, result) {
                         res.json({
                             error: error,
                             result: result
-                        })
-                    })
+                        });
+                    });
                 }
                 else {
                     res.status(404);

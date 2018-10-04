@@ -28,14 +28,14 @@
 
     #right-col h2 {
         margin-top: 40px;
-        margin-bottom: 30px;
+        margin-bottom: 0px;
         position: relative;
         left: -40px;
     }
 
     #left-col ul {
-        margin:40px 0;
-        margin-left: 40px;
+        margin: 40px 0;
+        margin-left: 10px;
         list-style-type: none;
     }
 

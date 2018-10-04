@@ -99,7 +99,8 @@ function create_INV(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    //obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['size'] = line[5];
 
 
@@ -121,7 +122,8 @@ function create_CON(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['size'] = line[5];
     obj['region'] = line[6];
 
@@ -143,7 +145,8 @@ function create_AMP(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['size'] = line[5];
     obj['new_copy_number'] = line[6];
 
@@ -166,7 +169,8 @@ function create_MOB(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['repeat_name'] = line[5];
     obj['strand'] = line[6];
     obj['duplication_size'] = line[7];
@@ -193,7 +197,8 @@ function create_SNP(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['new_seq'] = line[5];
 
     var count = 6;
@@ -213,7 +218,8 @@ function create_SUB(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['size'] = line[5];
     obj['new_seq'] = line[6];
 
@@ -234,7 +240,8 @@ function create_DEL(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['size'] = line[5];
 
     var count = 6;
@@ -254,7 +261,8 @@ function create_INS(line) {
     obj['evidence_id'] = line[1];
     obj['parent_ids'] = line[2];
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['new_seq'] = line[5];
     // obj['insert_position'] = line[6];
 
@@ -331,7 +339,8 @@ function create_RA(line) {
     obj['parent_ids'] = line[2];
 
     obj['seq_id'] = line[3];
-    obj['position'] = line[4];
+    // obj['position'] = line[4];
+    obj['position'] = parseInt(line[4]);
     obj['insert_position'] = line[5];
     obj['ref_base'] = line[6];
     obj['new_base'] = line[7];

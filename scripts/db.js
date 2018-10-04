@@ -30,7 +30,7 @@ function insertDocs(table, document, callback) {
     MongoClient.connect(url, function (err, db) {
         if(err){
             callback(err, null)
-        }else {
+        } else {
             var ourDB = db.db(dbName);
             for (var i = 0; i < document.length; i++) {
                 ourDB.collection(table).insertOne(document[i], function (err, res) {
@@ -101,7 +101,6 @@ function queryTables(callback) {
     });
 }
 
-
 /**
  * this function returns a list of generations (integers) in sorted order
  * @param {string} table - database collection
@@ -135,6 +134,37 @@ function queryGenerations(table, culture, callback) {
     });
 }
 
+function queryUniqueGenerations(table, culture, callback) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) {
+            callback(err, db);
+        } else {
+            var dbo = db.db(dbName);
+            dbo.collection(table).aggregate([
+                { "$match": { "culture": culture }},
+                { "$group": { _id: "$generation" }},
+                { "$sort": { _id: 1 }}
+            ]).toArray(function(err, result) {
+                try {
+                    if (err) {
+                        callback(err, result);
+                    } else {
+                        var genArr = [];
+                        for (var i = 0; i < result.length; i++) {
+                            var int = parseInt(result[i]._id);
+                            genArr.push(int);
+                        }
+                        callback(err, genArr);
+                    }
+                }
+                finally {
+                    db.close();
+                }
+            });
+        }
+    });
+}
+
 
 /**
  * this function returns all the cultures(e.g. HA3) in a culture type(either coculture or monoculture) in sorted order
@@ -153,7 +183,6 @@ function queryCultures(table, type, callback) {
                     if (err) {
                         callback(err, result);
                     } else {
-                        // console.log(result);
                         var cultArr = [];
                         for (var i = 0; i < result.length; i++) {
                             var culture = result[i].culture;
@@ -161,6 +190,38 @@ function queryCultures(table, type, callback) {
                         }
                         var uniqueArr = cultArr.filter(findUnique);
                         callback(err, uniqueArr.sort());
+                    }
+                }
+                finally {
+                    db.close();
+                }
+            });
+        }
+    });
+}
+
+
+function queryUniqueCulture(table, type, callback) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) {
+            callback(err, db);
+        } else {
+            var dbo = db.db(dbName);
+            dbo.collection(table).aggregate([
+                { "$match": { "type": type }},
+                { "$group": { _id: "$culture" }},
+                { "$sort": { _id: 1 }}
+            ]).toArray(function(err, result) {
+                try {
+                    if (err) {
+                        callback(err, result);
+                    } else {
+                        var cultArr = [];
+                        for (var i = 0; i < result.length; i++) {
+                            var culture = result[i]._id;
+                            cultArr.push(culture);
+                        }
+                        callback(err, cultArr);
                     }
                 }
                 finally {
@@ -186,6 +247,7 @@ function queryMutEvid(table, culture, generation, callback) {
         } else {
             var dbo = db.db(dbName);
             var query = {culture: culture, generation: generation};
+            console.log(" in quert MutEvid!!!!!!!!!!!!")
             dbo.collection(table).find(query).toArray(function (err, result) {
                 try {
                     if (err) {
@@ -199,6 +261,87 @@ function queryMutEvid(table, culture, generation, callback) {
                 }
             });
         }
+    });
+}
+
+
+/**
+ * This function returns
+ */
+function queryCompare(table, culture, generation, callback) {
+    MongoClient.connect(url, function(err, db) {
+        if(err) {
+            console.log('Unable to connect to the mongoDB server. Error:', err);
+        }
+        var dbo = db.db("BIOSA");
+        dbo.collection(table).aggregate([
+            { "$match": { "$or": [{"culture": culture}, {"culture": "Ancestor"}] } },
+            { "$unwind": "$mutations"},
+            { "$project": {
+                    culture: "$culture",
+                    generation: "$generation",
+                    mutation: "$mutations",
+                    evidence: { $filter: {
+                            input: "$evidences",
+                            as: "evidence",
+                            cond: { $eq: ["$$evidence.evidence_id", "$mutations.parent_ids"] }
+                        }}
+                }},
+            { "$group": {
+                    // position
+                    _id: "$mutation.position",
+
+                    // type
+                    type: {$addToSet: "$mutation.type"},
+
+                    // frequency
+                    frequency: { $addToSet: { "generation": "$generation",
+                            "freq": "$mutation.frequency"
+                        }},
+
+                    // seq_id
+                    seq_id: { $addToSet: "$mutation.seq_id" },
+
+                    // description
+                    description: { $addToSet: "$mutation.gene_product" },
+
+                    // gene
+                    gene: { $addToSet: { "gene_name": "$mutation.gene_name",
+                            "gene_strand": "$mutation.gene_strand"
+                        }},
+
+                    // annotation
+                    annotation: { $addToSet: { "gene_position": "$mutation.gene_position",
+                            "aa_ref_seq": "$mutation.aa_ref_seq",
+                            "aa_position": "$mutation.aa_position",
+                            "aa_new_seq": "$mutation.aa_new_seq",
+                            "codon_ref_seq": "$mutation.codon_ref_seq",
+                            "codon_new_seq": "$mutation.codon_new_seq"
+                        }},
+
+                    // mutation
+                    mutation: {$addToSet: { "new_seq": "$mutation.new_seq",
+                            "size": "$mutation.size",
+                            "ref_base": "$evidence.ref_base",
+                            "new_base": "$evidence.new_base",
+                            "repeat_name": "$mutation.repeat_name",
+                            "duplication_size": "$mutation.duplication_size"
+                        }}
+                }},
+            { "$sort": { seq_id: 1, _id: 1 }}
+        ]).toArray(function(err, result) {
+            try {
+                if (err) {
+                    callback(err, result);
+                } else {
+                    callback(err, result);
+                }
+            }
+            finally {
+                db.close();
+            }
+        });
+
     });
 }
 
@@ -218,7 +361,14 @@ module.exports = {
     insertDocs: insertDocs,
     queryGenerations: queryGenerations,
     queryCultures: queryCultures,
+
+    // newly added function to faster query generation and cultures
+    queryUniqueGenerations: queryUniqueGenerations,
+    queryUniqueCulture: queryUniqueCulture,
+
     queryMutEvid: queryMutEvid,
+    queryCompare: queryCompare,
+
     queryTables: queryTables,
     renameCollection: renameCollection
 };

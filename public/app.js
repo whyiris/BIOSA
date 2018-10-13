@@ -24,8 +24,7 @@ $(document).ready(function () {
             ccList: null,
             mcList: null,
             loading: false,
-            loadingCC: false,
-            loadingMC: false,
+            showHomeTable: false,
             ccGens: [],
             mcGens: [],
             ccHeaders: [],
@@ -41,9 +40,11 @@ $(document).ready(function () {
             reRenderCompareGraph: false,
             cc_predicted_mutations: [],
             mc_predicted_mutations: [],
-            cc_compare_generation:[],
+            cc_compare_generation: [],
+            plotting_data_map: {},
             mutation_headers: ['evidence', 'seq_id', 'position', 'mutation','freq', 'annotation', 'gene', 'description'],
-            compare_headers: ['seq_id', 'position', 'mutation', '0', '100', '300', '500', '780', '1000', 'annotation', 'gene', 'description']
+            compare_headers: ['seq_id', 'position', 'mutation', '0', '100', '300', '500', '780', '1000', 'annotation', 'gene', 'description'],
+            compare_selection: ['position']
         },
         methods: {
             reset: function () {
@@ -52,14 +53,18 @@ $(document).ready(function () {
                 this.ccHeaders = [];
                 this.mcHeaders = [];
                 this.ccList = [];
-                this.mcList = []
+                this.mcList = [];
+                this.cc_predicted_mutations = [];
+                this.mc_predicted_mutations = [];
+                this.cc_compare_generation = [];
+                this.reRender = false;
             },
             getCultures: function (event) {
                 this.reset();
                 this.disableSelect = true;
                 this.selectButtonMsg = "Processing ... ";
-                this.loadingCC = true;
-                this.loadingMC = true;
+                this.loading = true;
+                this.showHomeTable = true;
                 var collection = event.target.textContent;
                 var self = this;
 
@@ -110,10 +115,9 @@ $(document).ready(function () {
                         self.processResults(ccResult, "cc");
                         self.processResults(mcResult, "mc");
                         //self.normalizeHeader();
-                        self.fillEmptySlots(self.ccGens, self.ccHeaders);
-                        self.fillEmptySlots(self.mcGens, self.mcHeaders);
-                        self.loadingMC = false;
-                        self.loadingCC = false;
+                        self.fillEmptySlots(self.ccGens, self.ccHeaders, true);
+                        self.fillEmptySlots(self.mcGens, self.mcHeaders, false);
+                        self.loading = false;
                         self.disableSelect = false;
                         self.selectButtonMsg = "Select Collection";
                         $(this).off("ajaxStop");
@@ -157,11 +161,11 @@ $(document).ready(function () {
                     self.mcGens = _.orderBy(self.mcGens, 'culture');
                     self.mcHeaders = tempGenList.sort();
                     self.mcHeaders.unshift("Monoculture");
-                    self.mcHeaders.push("Compare");
+                    // self.mcHeaders.push("Compare");
 
                 }
             },
-            fillEmptySlots: function (cultureGens, header) {
+            fillEmptySlots: function (cultureGens, header, requireCompare) {
                 var self = this;
                 var gensList = cultureGens.map(function (currCulture) {
                     return currCulture.generations
@@ -179,7 +183,9 @@ $(document).ready(function () {
                             }
                         }
                     });
-                    currGenList[currGenList.length-1] = "compare";
+                    if (requireCompare){
+                        currGenList[currGenList.length-1] = "compare";
+                    }
                 });
             },
             normalizeHeader: function () {
@@ -215,8 +221,11 @@ $(document).ready(function () {
                 this.reRender = !this.reRender;
             },
             generateCCTable: function(event){
+                this.showHomeTable = false;
                 this.reRenderMCM = false;
-                this.reRenderCCM = true;
+                this.reRenderCCM = true
+                this.reRenderCompareGraph = false;
+                this.loading = true;
                 var self = this;
                 $("#gen-cc-table td").click(function() {
                     var column_num = parseInt( $(this).index() )-1;
@@ -226,8 +235,6 @@ $(document).ready(function () {
                     var cul = String(self.ccList[row_num]);
 
                     if (cul != "" && gen != " " && gen != "compare"){
-                        console.log(column_num);
-                        console.log(self.ccGens[row_num]);
                         var requestTable = $.ajax({
                             url: "query?db=BIOSA&collection=CULTURES_02232018&cultureType=C&culture=" + cul + "&generation=" + gen,
                             dataType: "json"
@@ -238,14 +245,12 @@ $(document).ready(function () {
                             var evidence_data_map = {};
                             for (var i = 0; i < retT.result.evidences.length; i++) {
                                 var data = retT.result.evidences[i];
-                                // console.log(retT);
                                 evidence_data_map[data.evidence_id] = [data.type, data.ref_base, data.new_base];
                             }
 
                             // query for all generations from cocultures
                             for (var i = 0; i < retT.result.mutations.length; i++) {
                                 var data = retT.result.mutations[i];
-                                // console.log(data);
                                 // this if else is for finding gene
                                 var gene_name_value = null;
                                 if (data.hasOwnProperty("gene_name")) {
@@ -331,11 +336,19 @@ $(document).ready(function () {
                     {
                         console.log("we are in else");
                     }
+
+                    // runs when all ajax queries for mc/cc gens are finished, and resets it back
+                    $(document).ajaxStop(function () {
+                        self.loading = false;
+                        $(this).off("ajaxStop");
+                    });
                 });
             },
             generateMCTable: function(event){
+                this.showHomeTable = false;
                 this.reRenderMCM = true;
                 this.reRenderCCM = false;
+                this.reRenderCompareGraph = false;
                 var self = this;
                 $("#gen-mc-table td").click(function() {
                     var column_num = parseInt( $(this).index() )-1;
@@ -400,8 +413,6 @@ $(document).ready(function () {
                                 var parent_ids = data.parent_ids;
                                 var parent_id_list = parent_ids.split(",");
 
-                                //console.log(parent_id_list);
-
                                 for (var j = 0; j < parent_id_list.length; j++){
                                     evid_types += evidence_data_map[parent_id_list[j]][0];
 
@@ -429,8 +440,6 @@ $(document).ready(function () {
                                     mutation = evidence_data_map[data.parent_ids][1] + "->" + evidence_data_map[data.parent_ids][2];
                                 }
 
-
-
                                 var evidence_obj = {
                                     description: data.gene_product,
                                     freq: freq_val,
@@ -451,14 +460,20 @@ $(document).ready(function () {
                     {
                         console.log("we are in else");
                     }
+                    $(document).ajaxStop(function () {
+                        self.loading = false;
+                        $(this).off("ajaxStop");
+                    });
                 });
             },
             generateCompareTable: function(event){
+                this.showHomeTable = false;
                 this.reRenderMCM = false;
                 this.reRenderCCM = false;
                 this.reRenderCompareWeb = true;
+                this.reRenderCompareGraph = false;
+                this.loading = true;
                 var self = this;
-                console.log("in generate compare table!!!!!!!!!!")
                 $("#gen-cc-table td").click(function() {
                     var column_num = parseInt( $(this).index() )-1;
                     var row_num = parseInt( $(this).parent().index() );
@@ -475,9 +490,7 @@ $(document).ready(function () {
 
                             // make a map for evidences data
                             var evidence_data_map = {};
-                            console.log(retT.result);
                             for (var res in retT.result) {
-                                // console.log(retT.result[res]);
                                 var data = retT.result[res];
 
                                 var seq_id = data.seq_id[0];
@@ -559,15 +572,20 @@ $(document).ready(function () {
 
                         });
                     }
+                    $(document).ajaxStop(function () {
+                        self.loading = false;
+                        $(this).off("ajaxStop");
+                    });
                 });
             },
             generateCompareGraph: function(event) {
+                this.showHomeTable = false;
                 this.reRenderMCM = false;
                 this.reRenderCCM = false;
                 this.reRenderCompareWeb = false;
                 this.reRenderCompareGraph = true;
+                this.loading = true;
                 var self = this;
-                console.log("in generate Compare Graph");
                 $("#gen-cc-table td").click(function() {
                     var column_num = parseInt( $(this).index() )-1;
                     var row_num = parseInt( $(this).parent().index() );
@@ -583,7 +601,6 @@ $(document).ready(function () {
                         });
                         $.when(requestTable).done(function (retT) {
                             for (var res in retT.result) {
-                                // console.log(retT.result[res]);
                                 var data = retT.result[res];
 
                                 var seq_id = data.seq_id[0];
@@ -615,7 +632,8 @@ $(document).ready(function () {
                                     name: seq_id + " " + data._id,
                                     type: 'scatter'
                                 };
-
+                                var position = data._id;
+                                self.plotting_data_map[position] = data;
                                 plotting_data.push(trace);
 
                                 var compare_obj = {
@@ -631,9 +649,7 @@ $(document).ready(function () {
                                 self.cc_compare_generation.push(compare_obj);
 
                             }
-                            Plotly.plot(document.getElementById('tester'), plotting_data, layout, {responsive: true});
-                            console.log("----------------------plotting data is ------------------------");
-                            console.log(plotting_data);
+                            Plotly.plot(document.getElementById('compareGraph'), plotting_data, layout, {responsive: true});
                         });
 
                         var layout = {
@@ -641,10 +657,70 @@ $(document).ready(function () {
                             font: {size: 12}
                         };
 
+                        $(document).ajaxStop(function () {
+                            self.loading = false;
+                            $(this).off("ajaxStop");
+                        });
                     }
 
-                });
+                    // selectAll Checkbox
+                    $("#selectAll").click(function () {
+                        $(".select").prop('checked', $(this).prop('checked'));
+                        $("#selectNone").prop('checked', !$(this).prop('checked'));
 
+                    });
+
+                    // selectNone Checkbox
+                    $("#selectNone").click(function () {
+                        $(".select").prop('checked', !$(this).prop('checked'));
+                        $("#selectAll").prop('checked', !$(this).prop('checked'));
+                    });
+                });
+            },
+            graphCompare: function (event) {
+                var chkArray = [];
+                var plotting_data = [];
+                var self = this;
+                $(".select:checked").each(function() {
+                    chkArray.push($(this)[0].parentElement.innerText);
+                });
+                for (var position in chkArray) {
+                    var freq_map = {
+                        freq_0: 0,
+                        freq_100: 0,
+                        freq_300: 0,
+                        freq_500: 0,
+                        freq_780: 0,
+                        freq_1000: 0
+                    };
+
+                    var data = self.plotting_data_map[chkArray[position]];
+                    var seq_id = data.seq_id;
+                    for (var index in data.frequency) {
+                        var frequency = "freq_" + data.frequency[index].generation;
+                        freq_map[frequency] = (parseFloat(data.frequency[index].freq)*100).toFixed(1);
+                    }
+
+                    var trace = {
+                        x: [0, 100, 300, 500, 780, 1000],
+                        y: [
+                            parseFloat(freq_map.freq_0),
+                            parseFloat(freq_map.freq_100),
+                            parseFloat(freq_map.freq_300),
+                            parseFloat(freq_map.freq_500),
+                            parseFloat(freq_map.freq_780),
+                            parseFloat(freq_map.freq_1000)
+                        ],
+                        name: seq_id + " " + data._id,
+                        type: 'scatter'
+                    };
+                    plotting_data.push(trace);
+                }
+                var layout = {
+                    title: "Graph",
+                    font: {size: 12}
+                };
+                Plotly.newPlot(document.getElementById('compareGraph'), plotting_data, layout, {responsive: true});
             }
         }
     });

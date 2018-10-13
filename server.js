@@ -27,7 +27,6 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res) {
-    //console.log(req.query);
     if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
         res.status(404);
         res.json({
@@ -37,7 +36,6 @@ router.get('/', function (req, res) {
     }
     else {
         queryHandler.serviceQuery(req.query, function (error, result) {
-
             if (result.collections) {
                 db.queryTables(function (error, result) {
                     res.json({

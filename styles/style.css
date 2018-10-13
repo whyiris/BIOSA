@@ -78,7 +78,7 @@
 }
 
 .entire-table div:nth-child(2) {
-    margin-top: 80px;
+    /*margin-top: 80px;*/
 }
 /*
 .gen-table {
@@ -193,8 +193,14 @@ table {
 }
 
 .square.gen-compare {
-    background: #6ca7f6;
-    /*background: #00215A;*/
+    /*background: #6ca7f6;*/
+    background: #00215A;
+    color: #e5efff;
+}
+
+.checkbox-group {
+    columns: 8 150px;
+    column-gap: 2em;
 }
 
 /*******************************************************

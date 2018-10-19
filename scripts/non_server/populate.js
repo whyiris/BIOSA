@@ -6,7 +6,7 @@ async.waterfall([
     function (callback) {
         const fs = require('fs');
         var parse = require('../parse');
-        var dataFolder = "../resources/feb_23";
+        var dataFolder = "../../resources/feb_23";
         var cocultures = [];
         var monocultures = [];
 
@@ -29,7 +29,6 @@ async.waterfall([
                     monocultures.push(parse.readFile(file));
                 });
             }
-
         });
 
         var all = cocultures.concat(monocultures);
@@ -39,7 +38,7 @@ async.waterfall([
 ], function (err, result) {
     console.log(result.length);
     var db = require('../db');
-    db.insertDocs("FEB_23_CULTURES", result);
+    db.insertDocs("CULTURES_02232018", result);
 });
 
 

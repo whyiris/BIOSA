@@ -41,10 +41,14 @@ $(document).ready(function () {
             cc_predicted_mutations: [],
             mc_predicted_mutations: [],
             cc_compare_generation: [],
+            graph_seq_id: {},
             plotting_data_map: {},
             mutation_headers: ['evidence', 'seq_id', 'position', 'mutation','freq', 'annotation', 'gene', 'description'],
             compare_headers: ['seq_id', 'position', 'mutation', '0', '100', '300', '500', '780', '1000', 'annotation', 'gene', 'description'],
-            compare_selection: ['position']
+            compare_selection: ['position'],
+            checkbox_group_header: ['seq_id', 'gene'],
+            inner_checkbox_group_header: ['gene', 'position']
+
         },
         methods: {
             reset: function () {
@@ -593,6 +597,7 @@ $(document).ready(function () {
                     var gen = String(self.ccGens[row_num].generations[column_num]);
                     var cul = String(self.ccList[row_num]);
                     var plotting_data = [];
+                    var temp_data = {};
                     if (cul != "" && gen === "compare") {
 
                         var requestTable = $.ajax({
@@ -604,6 +609,24 @@ $(document).ready(function () {
                                 var data = retT.result[res];
 
                                 var seq_id = data.seq_id[0];
+                                var gene = data.gene[0];
+                                var temp_gene;
+
+                                if (gene.hasOwnProperty("gene_strand")) {
+                                    temp_gene = gene.gene_name;
+                                } else {
+                                    temp_gene = gene.gene_name;
+                                }
+                                temp_data['All'] = true;
+                                if (temp_data[seq_id] === undefined) {
+                                    temp_data[seq_id] = {};
+                                }
+                                temp_data[seq_id]["seqId_state"] = true;
+                                if (temp_data[seq_id][temp_gene] === undefined) {
+                                    temp_data[seq_id][temp_gene] = {};
+                                }
+                                temp_data[seq_id][temp_gene]["gene_state"] = true;
+                                temp_data[seq_id][temp_gene][data._id] = true;
 
                                 var freq_map = {
                                     freq_0: 0,
@@ -647,8 +670,8 @@ $(document).ready(function () {
                                     freq_1000: freq_map.freq_1000,
                                 };
                                 self.cc_compare_generation.push(compare_obj);
-
                             }
+                            self.graph_seq_id = temp_data;
                             Plotly.plot(document.getElementById('compareGraph'), plotting_data, layout, {responsive: true});
                         });
 
@@ -663,28 +686,54 @@ $(document).ready(function () {
                         });
                     }
 
-                    // selectAll Checkbox
-                    $("#selectAll").click(function () {
-                        $(".select").prop('checked', $(this).prop('checked'));
-                        $("#selectNone").prop('checked', !$(this).prop('checked'));
-
-                    });
-
-                    // selectNone Checkbox
-                    $("#selectNone").click(function () {
-                        $(".select").prop('checked', !$(this).prop('checked'));
-                        $("#selectAll").prop('checked', !$(this).prop('checked'));
-                    });
                 });
             },
+            geneSelect: function (e, positions) {
+                for (var position in positions) {
+                    positions[position] = e.target.checked;
+                }
+            },
+            seqIdSelect: function (e, gene_map) {
+                for (var gene in gene_map) {
+                    for (var position in gene_map[gene]) {
+                        gene_map[gene][position] = e.target.checked;
+                    }
+                }
+            },
+            selectAllSelect: function (e) {
+                var self = this;
+                self.graph_seq_id['All'] = e.target.checked;
+                for (var seqId in self.graph_seq_id) {
+                    self.graph_seq_id[seqId]['seqId_state'] = e.target.checked;
+                    for (var gene in self.graph_seq_id[seqId]) {
+                        self.graph_seq_id[seqId][gene]['gene_state'] = e.target.checked;
+
+                        for (var position in self.graph_seq_id[seqId][gene]){
+                            self.graph_seq_id[seqId][gene][position] = e.target.checked;
+
+                        }
+                    }
+                }
+
+            },
+
             graphCompare: function (event) {
                 var chkArray = [];
                 var plotting_data = [];
+
                 var self = this;
-                $(".select:checked").each(function() {
-                    chkArray.push($(this)[0].parentElement.innerText);
-                });
+                for (var seqId in self.graph_seq_id) {
+                    for (var gene in self.graph_seq_id[seqId]) {
+                        for (var position in self.graph_seq_id[seqId][gene]){
+                            if (self.graph_seq_id[seqId][gene][position] && position !== 'gene_state'){
+                                chkArray.push(position);
+                            }
+                        }
+                    }
+                }
+
                 for (var position in chkArray) {
+
                     var freq_map = {
                         freq_0: 0,
                         freq_100: 0,

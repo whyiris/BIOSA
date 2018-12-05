@@ -21,8 +21,8 @@ Additionally, a REST API is provided for database access using the browser, and 
 
 
 ## How to Run:
-1. Start mongoDB server.
-2. $ node server.js
+1. Start mongoDB server, $ mongod
+2. Open a new terminal, $ node server.js
 3. Connect using the browser at http://localhost:3001
 
 

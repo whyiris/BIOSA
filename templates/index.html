@@ -11,9 +11,8 @@
     <link rel="stylesheet" href="/styles/style.css">
 
     <!-- Vue JS-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"
-            integrity="sha256-1Q2q5hg2YXp9fYlM++sIEXOcUb8BRSDUsQ1zXvLBqmA=" crossorigin="anonymous"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.js"></script>
 </head>
 <body>
 <!-- begin entire container -->
@@ -57,7 +56,7 @@
                         <td v-for="gen in cc.generations" >
                             <div v-bind:class="'square gen-' + gen" v-if="gen!='compare'" v-on:click="generateCCTable(); reactToButtons()" ></div>
                             <div v-bind:class="'square gen-' + gen" v-if="gen=='compare'" v-on:click="generateCompareTable(); reactToButtons()" >web</div>
-                            <div v-bind:class="'square gen-' + gen" v-if="gen=='compare'" v-on:click="generateCompareGraph(); reactToButtons()" >graph</div>
+                            <div v-bind:class="'square gen-' + gen" v-if="gen=='compare'" v-on:click="generateCompareGraph(); reactToButtons();" >graph</div>
                         </td>
                     </tr>
                     </tbody>
@@ -174,20 +173,80 @@
                 <div id="compareGraph" v-show="reRenderCompareGraph"></div>
                 <div class="input-group mb-3" v-show="reRenderCompareGraph">
                     <div class="input-group-prepend">
-                        <label class="radio-inline"><input type="checkbox" id="selectAll" checked="checked">Select All</label>
-                        <label class="radio-inline"><input type="checkbox" id="selectNone">Select None</label>
+                        <label class="radio-inline">
+                            <input type="checkbox"
+                                   id="selectAll"
+                                   v-on:change="e => selectAllSelect(e)"
+                                   v-model="graph_seq_id['All']"
+                                   checked="checked">Select All
+                            </input>
+                        </label>
                         <button type="submit" class="btn btn-primary btn-sm" id="graphCompare" v-on:click="graphCompare()">Graph</button>
-                        <div class="checkbox-group">
-                            <div v-for="index in cc_compare_generation.length">
-                                <label>
-                                    <input type="checkbox"
-                                           class="select"
-                                           checked="checked">{{cc_compare_generation[index-1].position}}
-                                    </input>
-                                </label>
+
+                            <td class="checkbox-group-table">
+                                <table id="checkbox-group-table" class="table table-bordered header-fixed" >
+                                    <thead>
+                                    <tr>
+                                        <th v-for="header in checkbox_group_header">{{header}}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="(gene_map, seq_id) in graph_seq_id"
+                                        v-if="seq_id !== 'All'">
+                                        <td>
+                                            <label>
+                                                <input type="checkbox"
+                                                       class="seqidSelect"
+                                                       v-model="gene_map['seqId_state']"
+                                                       v-bind:id="seq_id"
+                                                       v-on:change="e => seqIdSelect(e, gene_map)">{{seq_id}}
+                                                </input>
+                                            </label>
+
+                                        </td>
+                                        <td>
+                                            <table id="inner-table"
+                                                   class="table table-bordered header-fixed" >
+                                                <thead>
+                                                <tr>
+                                                    <th v-for="inner_header in inner_checkbox_group_header">{{inner_header}}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="(positions, gene) in gene_map"
+                                                    v-if="gene !== 'seqId_state'">
+                                                    <td>
+                                                        <label>
+                                                            <input type="checkbox"
+                                                                   class="geneSelect"
+                                                                   v-model="positions['gene_state']"
+                                                                   v-bind:id="gene"
+                                                                   v-on:change="e => geneSelect(e, positions)">{{gene}}
+
+                                                            </input>
+                                                        </label>
+                                                    </td>
+                                                        <label>
+                                                            <td v-for="(value, position) in positions"
+                                                                v-if="position !== 'gene_state'">
+                                                                <input type="checkbox"
+                                                                       v-model="positions[position]"
+                                                                       class="position-select">{{position}}
+
+                                                                </input>
+                                                            </td>
+                                                        </label>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
                             </div>
 
-                        </div>
                     </div>
 
                 </div>

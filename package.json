@@ -4,7 +4,7 @@
   "description": "Biology Sequencing Analysis Project",
   "main": "server.js",
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^3.2.2",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
     "cookie-parser": "^1.4.3",
